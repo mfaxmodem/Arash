@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   ArrowRight,
   Leaf,

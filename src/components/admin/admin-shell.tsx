@@ -30,7 +30,7 @@ import { AdminBlog } from "@/components/admin/admin-blog";
 import { AdminProductComments } from "@/components/admin/admin-product-comments";
 import { AdminContent } from "@/components/admin/admin-content";
 import { AdminMessages } from "@/components/admin/admin-messages";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 const TABS = [
   { id: "dashboard", label: "داشبورد", icon: LayoutDashboard },

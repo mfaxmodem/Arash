@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Star, MessageSquareQuote, Quote, User } from "lucide-react";
 
 export function TestimonialsSection() {

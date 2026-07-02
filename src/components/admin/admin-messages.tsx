@@ -6,7 +6,7 @@ import type { ContactMessage } from "@/lib/types";
 import { formatPersianDateTime, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Mail, MailOpen, MailCheck, Trash2, Phone, User, Clock } from "lucide-react";
 import { useState } from "react";
 

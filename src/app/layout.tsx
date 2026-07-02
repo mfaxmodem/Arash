@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
+import { Toasters } from "@/components/toasters";
 
 export const metadata: Metadata = {
   title: "ساورز و چویل | خشکبار، ادویه‌جات، قند و شکر",
@@ -46,9 +45,10 @@ export default function RootLayout({
         />
       </head>
       <body className="font-vazir antialiased bg-background text-foreground">
-        <Providers>{children}</Providers>
-        <Toaster />
-        <SonnerToaster position="top-center" richColors />
+        <Providers>
+          {children}
+          <Toasters />
+        </Providers>
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import type { ProductComment } from "@/lib/types";
 import { cn, toPersianDigits, formatPersianDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { MessageSquare, Check, X, Trash2, Star, Clock, CheckCircle, XCircle, Package } from "lucide-react";
 
 export function AdminProductComments() {
