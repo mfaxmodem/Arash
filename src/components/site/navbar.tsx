@@ -5,19 +5,20 @@ import { useNav, type View } from "@/store/nav-store";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { Menu, Lock, Leaf, Sparkles } from "lucide-react";
+import { Menu, Leaf, Sparkles } from "lucide-react";
 
 const NAV_ITEMS: { label: string; view: View }[] = [
   { label: "خانه", view: "home" },
   { label: "محصولات", view: "products" },
   { label: "نمایندگان", view: "agents" },
+  { label: "بلاگ", view: "blog" },
   { label: "نظرات", view: "testimonials" },
   { label: "درباره ما", view: "about" },
   { label: "تماس", view: "contact" },
 ];
 
 export function Navbar() {
-  const { view, setView, openAdmin } = useNav();
+  const { view, setView } = useNav();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -80,8 +81,8 @@ export function Navbar() {
                 key={item.view}
                 onClick={() => handleNav(item.view)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors relative",
-                  view === item.view
+                  "px-3.5 py-2 rounded-lg text-sm font-medium transition-colors relative",
+                  view === item.view || (item.view === "blog" && view === "blogDetail")
                     ? scrolled
                       ? "bg-primary/10 text-primary"
                       : "bg-white/20 text-white"
@@ -95,72 +96,45 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => openAdmin()}
-              variant={scrolled ? "outline" : "secondary"}
-              size="sm"
-              className={cn(
-                "hidden sm:flex gap-2",
-                !scrolled && "bg-white/90 text-foreground hover:bg-white"
-              )}
-            >
-              <Lock className="w-4 h-4" />
-              پنل مدیریت
-            </Button>
-
-            {/* Mobile menu */}
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant={scrolled ? "outline" : "secondary"}
-                  size="icon"
-                  className={cn("lg:hidden", !scrolled && "bg-white/90")}
-                  aria-label="منو"
-                >
-                  <Menu className="w-5 h-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-72 p-0">
-                <div className="flex flex-col h-full">
-                  <div className="p-6 border-b">
-                    <div className="font-extrabold text-lg">
-                      ساورز <span className="text-chovil">و</span> چویل
-                    </div>
-                  </div>
-                  <nav className="flex flex-col p-4 gap-1">
-                    {NAV_ITEMS.map((item) => (
-                      <SheetClose asChild key={item.view}>
-                        <button
-                          onClick={() => handleNav(item.view)}
-                          className={cn(
-                            "px-4 py-3 rounded-lg text-right font-medium transition-colors",
-                            view === item.view
-                              ? "bg-primary/10 text-primary"
-                              : "hover:bg-muted"
-                          )}
-                        >
-                          {item.label}
-                        </button>
-                      </SheetClose>
-                    ))}
-                  </nav>
-                  <div className="mt-auto p-4 border-t">
-                    <SheetClose asChild>
-                      <Button
-                        onClick={() => openAdmin()}
-                        className="w-full gap-2"
-                        variant="outline"
-                      >
-                        <Lock className="w-4 h-4" />
-                        پنل مدیریت
-                      </Button>
-                    </SheetClose>
+          {/* Mobile menu */}
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant={scrolled ? "outline" : "secondary"}
+                size="icon"
+                className={cn("lg:hidden", !scrolled && "bg-white/90")}
+                aria-label="منو"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72 p-0">
+              <div className="flex flex-col h-full">
+                <div className="p-6 border-b">
+                  <div className="font-extrabold text-lg">
+                    ساورز <span className="text-chovil">و</span> چویل
                   </div>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+                <nav className="flex flex-col p-4 gap-1">
+                  {NAV_ITEMS.map((item) => (
+                    <SheetClose asChild key={item.view}>
+                      <button
+                        onClick={() => handleNav(item.view)}
+                        className={cn(
+                          "px-4 py-3 rounded-lg text-right font-medium transition-colors",
+                          view === item.view
+                            ? "bg-primary/10 text-primary"
+                            : "hover:bg-muted"
+                        )}
+                      >
+                        {item.label}
+                      </button>
+                    </SheetClose>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

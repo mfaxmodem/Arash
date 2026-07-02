@@ -4,16 +4,18 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { Product, Category, Paginated } from "@/lib/types";
-import { formatPrice, toPersianDigits, cn } from "@/lib/utils";
+import { toPersianDigits, cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Package, Leaf, Sparkles, ShoppingCart, AlertCircle } from "lucide-react";
+import { useNav } from "@/store/nav-store";
+import { Search, Package, Leaf, Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 12;
 
 export function ProductsSection() {
+  const { openProduct } = useNav();
   const [page, setPage] = useState(1);
   const [categoryId, setCategoryId] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
@@ -59,16 +61,16 @@ export function ProductsSection() {
   };
 
   return (
-    <section id="products" className="py-20 bg-background">
+    <section id="products" className="pt-28 pb-20 bg-background">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <Badge variant="secondary" className="mb-3 gap-1">
             <Package className="w-3.5 h-3.5" />
             محصولات ما
           </Badge>
           <h2 className="text-3xl md:text-5xl font-black text-foreground mb-3">
-            فروشگاه خشکبار و ادویه‌جات
+            معرفی محصولات
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             بهترین کیفیت خشکبار، ادویه‌جات و قند و شکر با برند ساورز و چویل
@@ -77,7 +79,6 @@ export function ProductsSection() {
 
         {/* Filters */}
         <div className="mb-8 space-y-4">
-          {/* Search */}
           <div className="flex gap-2 max-w-md mx-auto">
             <div className="relative flex-1">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -94,7 +95,6 @@ export function ProductsSection() {
             </Button>
           </div>
 
-          {/* Category + Brand filters */}
           <div className="flex flex-wrap items-center justify-center gap-2">
             <FilterChip active={categoryId === ""} onClick={() => changeFilter(() => setCategoryId(""))}>
               همه دسته‌ها
@@ -148,14 +148,14 @@ export function ProductsSection() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
             ))}
           </div>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-12">
+          <div className="flex items-center justify-center gap-2 mt-12 flex-wrap">
             <Button
               variant="outline"
               size="sm"
@@ -217,12 +217,20 @@ function FilterChip({
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({
+  product,
+  onClick,
+}: {
+  product: Product;
+  onClick: () => void;
+}) {
   const outOfStock = product.stock <= 0;
-  const lowStock = !outOfStock && product.stock <= product.lowStock;
 
   return (
-    <article className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+    <article
+      onClick={onClick}
+      className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
+    >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-muted/30">
         {product.image ? (
@@ -251,15 +259,7 @@ function ProductCard({ product }: { product: Product }) {
             </span>
           )}
         </div>
-        {/* Stock badge */}
-        {outOfStock && (
-          <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-            <span className="px-4 py-2 rounded-full bg-destructive text-white text-sm font-bold">
-              ناموجود
-            </span>
-          </div>
-        )}
-        {product.featured && !outOfStock && (
+        {product.featured && (
           <div className="absolute bottom-3 right-3">
             <span className="px-2.5 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow">
               ویژه
@@ -283,29 +283,19 @@ function ProductCard({ product }: { product: Product }) {
         {product.weight && (
           <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
             <span className="px-2 py-0.5 rounded bg-muted">{product.weight}</span>
-            {lowStock && (
-              <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-700">
-                موجودی محدود
+            {outOfStock && (
+              <span className="px-2 py-0.5 rounded bg-destructive/10 text-destructive">
+                ناموجود
               </span>
             )}
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-border/50">
-          <div className="flex flex-col">
-            <span className="text-lg font-black text-primary">
-              {formatPrice(product.price)}
-            </span>
-            <span className="text-[11px] text-muted-foreground">به ازای {product.unit}</span>
+        <div className="mt-auto pt-3 border-t border-border/50">
+          <div className="flex items-center justify-center gap-1 text-primary font-medium text-sm group-hover:gap-2 transition-all">
+            مشاهده جزئیات
+            <ArrowLeft className="w-4 h-4" />
           </div>
-          <Button
-            size="sm"
-            disabled={outOfStock}
-            className="gap-1.5 shrink-0"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            خرید
-          </Button>
         </div>
       </div>
     </article>

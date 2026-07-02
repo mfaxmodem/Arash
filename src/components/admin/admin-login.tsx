@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,6 @@ export function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const qc = useQueryClient();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,13 +27,14 @@ export function AdminLogin() {
       if (res?.error) {
         setError("ایمیل یا رمز عبور اشتباه است");
         toast.error("ورود ناموفق بود");
+        setLoading(false);
       } else {
         toast.success("خوش آمدید!");
-        qc.invalidateQueries({ queryKey: ["me"] });
+        // Force a full reload to ensure session is picked up reliably
+        setTimeout(() => window.location.reload(), 400);
       }
     } catch {
       setError("خطا در ارتباط با سرور");
-    } finally {
       setLoading(false);
     }
   };

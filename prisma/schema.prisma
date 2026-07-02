@@ -59,8 +59,39 @@ model Product {
   weight      String?
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
+  comments    ProductComment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+/// Comments on products (requires approval)
+model ProductComment {
+  id        String   @id @default(cuid())
+  productId String
+  name      String
+  rating    Int      @default(5) // 1-5
+  comment   String
+  /// PENDING | APPROVED | REJECTED
+  status    String   @default("PENDING")
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+/// Blog posts (مقالات وب‌سایت)
+model BlogPost {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  content   String
+  image     String?
+  author    String   @default("تیم ساورز و چویل")
+  tags      String?  /// comma-separated tags
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Hero slider images

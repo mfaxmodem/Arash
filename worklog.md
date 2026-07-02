@@ -101,3 +101,36 @@ Stage Summary:
 - Production-ready full-stack app complete. All OWASP Top 10 mitigations in place.
 - Admin credentials: admin@savers-chovil.ir / admin12345
 - Single-page architecture at / with state-based navigation + admin overlay
+
+---
+Task ID: 8 (v2 changes)
+Agent: orchestrator
+Task: Apply user feedback - font fix, admin URL access, logout caching, 3-section featured products, remove price/buy, product detail + comments, blog section
+
+Work Log:
+- Font: Switched from next/font/google Vazirmatn to reliable jsdelivr CDN link in <head>; verified "Vazirmatn" applied in computed style
+- Database: Added BlogPost + ProductComment models (with relation to Product, onDelete Cascade); pushed schema + regenerated Prisma client; seeded 4 sample blog posts
+- API: New routes /api/blog, /api/blog/[id], /api/products/[id]/comments, /api/product-comments, /api/product-comments/[id] (all with CSRF + RBAC)
+- Navbar: Removed "پنل مدیریت" button; added "بلاگ" nav item; admin now accessed only via URL hash #admin
+- Admin session fix: AdminPanel query uses staleTime:0 + cacheTime:0; logout calls signOut + removeQueries + clears hash; login uses window.location.reload() for reliable session pickup
+- Featured products: Rewrote as 3 sections - 6 random all products + 6 random Chovil + 6 random Savers (client-side shuffle for true randomness each load)
+- Products: Removed price display and buy button from all product cards (home + products page); cards now show "مشاهده جزئیات"
+- Product detail: New full detail view with image, description, content, weight/unit; comments list (approved) + comment submission form with star rating; "استعلام قیمت و خرید" button redirects to contact (for future store)
+- Blog: BlogSection (3 latest on homepage before About), BlogList (full list with search), BlogDetail (full article + related posts); all clickable navigation
+- Admin: Added "بلاگ" tab (full CRUD with content editor) and "نظرات محصولات" tab (approve/reject/delete comments with product context); dashboard updated with new stats + alerts
+
+Verification (Agent Browser):
+- Vazirmatn font applied (computed font-family = "Vazirmatn, system-ui...") ✓
+- Homepage: 3 product sections (منتخب / چویل / ساورز) + blog section + about ✓
+- Admin button removed from navbar ✓
+- Admin access via #admin URL shows login form ✓
+- Login works → dashboard shows after reload ✓
+- Logout works → re-accessing #admin shows login (NOT cached session) ✓
+- Blog list (4 articles) + blog detail (with related posts) ✓
+- Product detail: shows info + comments section + comment form ✓
+- Product comment submission → pending → admin approve → shows on product page ✓
+- No price/buy button visible anywhere on public site ✓
+- No runtime errors, ESLint clean ✓
+
+Stage Summary:
+- All 8 user requests implemented and verified. Site is showcase-only (no e-commerce). Admin access restricted to URL #admin. Session/logout now works correctly.

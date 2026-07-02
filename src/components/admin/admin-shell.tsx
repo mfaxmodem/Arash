@@ -1,6 +1,7 @@
 "use client";
 
 import { useNav } from "@/store/nav-store";
+import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,14 +16,18 @@ import {
   LogOut,
   Leaf,
   Sparkles,
+  Newspaper,
+  MessageSquare,
 } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
 import { AdminProducts } from "@/components/admin/admin-products";
 import { AdminCategories } from "@/components/admin/admin-categories";
 import { AdminSliders } from "@/components/admin/admin-sliders";
 import { AdminAgents } from "@/components/admin/admin-agents";
 import { AdminTestimonials } from "@/components/admin/admin-testimonials";
+import { AdminBlog } from "@/components/admin/admin-blog";
+import { AdminProductComments } from "@/components/admin/admin-product-comments";
 import { AdminContent } from "@/components/admin/admin-content";
 import { AdminMessages } from "@/components/admin/admin-messages";
 import { toast } from "sonner";
@@ -33,17 +38,25 @@ const TABS = [
   { id: "categories", label: "دسته‌بندی‌ها", icon: FolderTree },
   { id: "sliders", label: "اسلایدر", icon: Images },
   { id: "agents", label: "نمایندگان", icon: Store },
-  { id: "testimonials", label: "نظرات", icon: MessageSquareQuote },
+  { id: "testimonials", label: "نظرات خریداران", icon: MessageSquareQuote },
+  { id: "productComments", label: "نظرات محصولات", icon: MessageSquare },
+  { id: "blog", label: "بلاگ", icon: Newspaper },
   { id: "content", label: "محتوای صفحات", icon: FileText },
   { id: "messages", label: "پیام‌ها", icon: Mail },
 ] as const;
 
 export function AdminShell({ user }: { user: { email: string; name: string; role: string } }) {
   const { adminTab, setAdminTab, closeAdmin } = useNav();
+  const qc = useQueryClient();
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
+    // Critical: clear cached session so next open requires login again
+    qc.removeQueries({ queryKey: ["me"] });
     toast.success("از پنل خارج شدید");
+    if (typeof window !== "undefined" && window.location.hash === "#admin") {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
     closeAdmin();
   };
 
@@ -137,6 +150,8 @@ export function AdminShell({ user }: { user: { email: string; name: string; role
           {adminTab === "sliders" && <AdminSliders />}
           {adminTab === "agents" && <AdminAgents />}
           {adminTab === "testimonials" && <AdminTestimonials />}
+          {adminTab === "productComments" && <AdminProductComments />}
+          {adminTab === "blog" && <AdminBlog />}
           {adminTab === "content" && <AdminContent />}
           {adminTab === "messages" && <AdminMessages />}
         </div>

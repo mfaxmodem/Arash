@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import type { Product, Paginated } from "@/lib/types";
 import { toPersianDigits, formatPrice } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, FolderTree, Store, MessageSquareQuote, Mail, AlertTriangle, TrendingUp } from "lucide-react";
+import { Package, FolderTree, Store, MessageSquareQuote, Mail, AlertTriangle, TrendingUp, Newspaper, MessageSquare } from "lucide-react";
 
 export function AdminDashboard() {
   const { data: productsData } = useQuery({
@@ -30,16 +30,27 @@ export function AdminDashboard() {
     queryKey: ["messages"],
     queryFn: () => api.get<{ items: any[] }>("/api/contact-messages"),
   });
+  const { data: blogData } = useQuery({
+    queryKey: ["blog-admin"],
+    queryFn: () => api.get<{ items: any[] }>("/api/blog?all=true"),
+  });
+  const { data: productCommentsData } = useQuery({
+    queryKey: ["product-comments-admin", "PENDING"],
+    queryFn: () => api.get<{ items: any[] }>("/api/product-comments?status=PENDING"),
+  });
 
   const lowStockProducts = products.filter((p) => p.stock <= p.lowStock);
   const pendingTestimonials = (testimonialData?.items ?? []).filter((t: any) => t.status === "PENDING");
   const newMessages = (messageData?.items ?? []).filter((m: any) => m.status === "NEW");
+  const pendingProductComments = productCommentsData?.items ?? [];
 
   const stats = [
     { label: "محصولات", value: products.length, icon: Package, color: "bg-primary" },
     { label: "دسته‌بندی‌ها", value: catData?.items.length ?? 0, icon: FolderTree, color: "bg-savers" },
     { label: "نمایندگان", value: agentData?.items.length ?? 0, icon: Store, color: "bg-chovil" },
-    { label: "نظرات", value: testimonialData?.items.length ?? 0, icon: MessageSquareQuote, color: "bg-amber-500" },
+    { label: "مقالات بلاگ", value: blogData?.items.length ?? 0, icon: Newspaper, color: "bg-purple-500" },
+    { label: "نظرات خریداران", value: testimonialData?.items.length ?? 0, icon: MessageSquareQuote, color: "bg-amber-500" },
+    { label: "نظرات محصولات", value: (productCommentsData?.items ?? []).length, icon: MessageSquare, color: "bg-pink-500" },
     { label: "پیام‌ها", value: messageData?.items.length ?? 0, icon: Mail, color: "bg-blue-500" },
   ];
 
@@ -51,22 +62,22 @@ export function AdminDashboard() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {stats.map((s) => (
           <Card key={s.label} className="overflow-hidden">
-            <CardContent className="p-5">
-              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${s.color} text-white mb-3`}>
-                <s.icon className="w-5 h-5" />
+            <CardContent className="p-4">
+              <div className={`inline-flex items-center justify-center w-9 h-9 rounded-xl ${s.color} text-white mb-2`}>
+                <s.icon className="w-4 h-4" />
               </div>
-              <div className="text-2xl font-black text-foreground">{toPersianDigits(s.value)}</div>
-              <div className="text-xs text-muted-foreground">{s.label}</div>
+              <div className="text-xl font-black text-foreground">{toPersianDigits(s.value)}</div>
+              <div className="text-[11px] text-muted-foreground">{s.label}</div>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Alerts */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-amber-200 bg-amber-50">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-amber-700 text-base">
@@ -122,6 +133,21 @@ export function AdminDashboard() {
               {toPersianDigits(newMessages.length)} پیام
             </div>
             <p className="text-xs text-muted-foreground">پاسخ‌دهی به مشتریان</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-pink-200 bg-pink-50">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-pink-700 text-base">
+              <MessageSquare className="w-4 h-4" />
+              نظرات محصولات در انتظار
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-black text-pink-700 mb-2">
+              {toPersianDigits(pendingProductComments.length)} نظر
+            </div>
+            <p className="text-xs text-muted-foreground">بررسی نظرات روی محصولات</p>
           </CardContent>
         </Card>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useNav } from "@/store/nav-store";
 import { Navbar } from "@/components/site/navbar";
 import { HeroSlider } from "@/components/site/hero-slider";
@@ -13,9 +14,27 @@ import { ContactSection } from "@/components/site/contact-section";
 import { Footer } from "@/components/site/footer";
 import { AdminPanel } from "@/components/admin/admin-panel";
 import { AboutPreview } from "@/components/site/about-preview";
+import { BlogSection } from "@/components/site/blog-section";
+import { BlogList } from "@/components/site/blog-list";
+import { BlogDetail } from "@/components/site/blog-detail";
+import { ProductDetail } from "@/components/site/product-detail";
 
 export default function Home() {
-  const { view, adminMode } = useNav();
+  const { view, adminMode, openAdmin, closeAdmin } = useNav();
+
+  // Admin access via URL hash #admin
+  useEffect(() => {
+    const checkHash = () => {
+      if (window.location.hash === "#admin") {
+        openAdmin("dashboard");
+      } else {
+        if (adminMode) closeAdmin();
+      }
+    };
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -26,12 +45,16 @@ export default function Home() {
           <>
             <HeroSlider />
             <FeaturedProducts />
+            <BlogSection />
             <AboutPreview />
             <TestimonialPreview />
           </>
         )}
         {view === "products" && <ProductsSection />}
+        {view === "productDetail" && <ProductDetail />}
         {view === "agents" && <AgentsSection />}
+        {view === "blog" && <BlogList />}
+        {view === "blogDetail" && <BlogDetail />}
         {view === "testimonials" && <TestimonialsSection />}
         {view === "about" && <AboutSection />}
         {view === "contact" && <ContactSection />}

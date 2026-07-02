@@ -93,6 +93,28 @@ export const testimonialSchema = z.object({
   comment: safeString(1000).min(5, "حداقل ۵ کاراکتر"),
 });
 
+export const productCommentSchema = z.object({
+  name: safeString(100).min(2, "نام الزامی است"),
+  rating: z.number().int().min(1).max(5).default(5),
+  comment: safeString(1000).min(5, "حداقل ۵ کاراکتر"),
+});
+
+export const blogPostSchema = z.object({
+  title: safeString(200).min(2, "عنوان الزامی است"),
+  slug: z
+    .string()
+    .trim()
+    .min(2)
+    .max(200)
+    .regex(/^[a-z0-9-]+$/, "اسلاگ نامعتبر است"),
+  excerpt: safeString(500).optional().or(z.literal("")),
+  content: safeString(50000).min(5, "محتوا الزامی است"),
+  image: safeString(500).optional().or(z.literal("")),
+  author: safeString(100).default("تیم ساورز و چویل"),
+  tags: safeString(500).optional().or(z.literal("")),
+  published: z.boolean().default(false),
+});
+
 export const pageContentSchema = z.object({
   key: safeString(100).min(1, "کلید الزامی است"),
   value: safeString(50000),
@@ -117,5 +139,7 @@ export type ProductInput = z.infer<typeof productSchema>;
 export type SliderInput = z.infer<typeof sliderSchema>;
 export type AgentInput = z.infer<typeof agentSchema>;
 export type TestimonialInput = z.infer<typeof testimonialSchema>;
+export type ProductCommentInput = z.infer<typeof productCommentSchema>;
+export type BlogPostInput = z.infer<typeof blogPostSchema>;
 export type PageContentInput = z.infer<typeof pageContentSchema>;
 export type ContactInput = z.infer<typeof contactSchema>;

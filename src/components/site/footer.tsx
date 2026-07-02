@@ -7,6 +7,7 @@ const NAV_ITEMS: { label: string; view: View }[] = [
   { label: "خانه", view: "home" },
   { label: "محصولات", view: "products" },
   { label: "نمایندگان", view: "agents" },
+  { label: "بلاگ", view: "blog" },
   { label: "نظرات", view: "testimonials" },
   { label: "درباره ما", view: "about" },
   { label: "تماس", view: "contact" },

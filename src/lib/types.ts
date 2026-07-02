@@ -78,6 +78,31 @@ export interface ContactMessage {
   createdAt: string;
 }
 
+export interface ProductComment {
+  id: string;
+  productId: string;
+  name: string;
+  rating: number;
+  comment: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  active: boolean;
+  createdAt: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content: string;
+  image?: string | null;
+  author: string;
+  tags?: string | null;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Paginated<T> {
   items: T[];
   total: number;

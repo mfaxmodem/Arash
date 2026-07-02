@@ -3,97 +3,197 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { Product, Paginated } from "@/lib/types";
-import { formatPrice, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
-import { Leaf, Sparkles, Package, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Leaf, Sparkles, Package } from "lucide-react";
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export function FeaturedProducts() {
-  const { setView } = useNav();
+  const { openProduct } = useNav();
+
+  // Fetch a larger pool and shuffle client-side for randomness on each load
   const { data, isLoading } = useQuery({
-    queryKey: ["products-featured"],
-    queryFn: () =>
-      api.get<Paginated<Product>>("/api/products?featured=true&limit=6"),
+    queryKey: ["products-featured-pool"],
+    queryFn: () => api.get<Paginated<Product>>("/api/products?limit=100"),
   });
-  const products = data?.items ?? [];
+  const all = data?.items ?? [];
+  const savers = all.filter((p) => p.brand === "SAVERS");
+  const chovil = all.filter((p) => p.brand === "CHOVIL");
+
+  const randomAll = shuffle(all).slice(0, 6);
+  const randomChovil = shuffle(chovil).slice(0, 6);
+  const randomSavers = shuffle(savers).slice(0, 6);
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-          <div>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3">
-              <Package className="w-4 h-4" />
-              پیشنهاد ویژه
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground">
-              محصولات منتخب
-            </h2>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => setView("products")}
-            className="gap-2"
-          >
-            مشاهده همه محصولات
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
+    <section className="py-16 md:py-20 bg-background">
+      <div className="container mx-auto px-4 space-y-16">
+        {/* Section 1: all random */}
+        <div>
+          <SectionHeader
+            badge="منتخب"
+            title="محصولات منتخب"
+            subtitle="گزیده‌ای از بهترین محصولات ما"
+            icon={Package}
+          />
+          {isLoading ? (
+            <ProductGridSkeleton />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+              {randomAll.map((p) => (
+                <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
+              ))}
+            </div>
+          )}
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-2xl" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {products.map((p) => (
-              <div
-                key={p.id}
-                className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer"
-                onClick={() => setView("products")}
-              >
-                <div className="relative aspect-square overflow-hidden bg-muted/30">
-                  {p.image && (
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  )}
-                  <span
-                    className={cn(
-                      "absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold",
-                      p.brand === "SAVERS" ? "brand-savers" : "brand-chovil"
-                    )}
-                  >
-                    {p.brand === "SAVERS" ? (
-                      <span className="inline-flex items-center gap-0.5">
-                        <Leaf className="w-2.5 h-2.5" /> ساورز
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-0.5">
-                        <Sparkles className="w-2.5 h-2.5" /> چویل
-                      </span>
-                    )}
-                  </span>
-                </div>
-                <div className="p-3">
-                  <h3 className="font-bold text-sm text-foreground line-clamp-1 mb-1">
-                    {p.name}
-                  </h3>
-                  <div className="text-primary font-black text-sm">
-                    {formatPrice(p.price)}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Section 2: Chovil random */}
+        <div>
+          <SectionHeader
+            badge="چویل"
+            title="محصولات برند چویل"
+            subtitle="ادویه‌جات خالص و قند و شکر مرغوب"
+            icon={Sparkles}
+            badgeClass="brand-chovil"
+          />
+          {isLoading ? (
+            <ProductGridSkeleton />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+              {randomChovil.map((p) => (
+                <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Section 3: Savers random */}
+        <div>
+          <SectionHeader
+            badge="ساورز"
+            title="محصولات برند ساورز"
+            subtitle="خشکبار و آجیل تازه و باکیفیت"
+            icon={Leaf}
+            badgeClass="brand-savers"
+          />
+          {isLoading ? (
+            <ProductGridSkeleton />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+              {randomSavers.map((p) => (
+                <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
+  );
+}
+
+function SectionHeader({
+  badge,
+  title,
+  subtitle,
+  icon: Icon,
+  badgeClass,
+}: {
+  badge: string;
+  title: string;
+  subtitle: string;
+  icon: React.ElementType;
+  badgeClass?: string;
+}) {
+  return (
+    <div className="mb-6 md:mb-8 text-center">
+      <span
+        className={cn(
+          "inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm mb-3 font-bold",
+          badgeClass || "bg-primary/10 text-primary"
+        )}
+      >
+        <Icon className="w-4 h-4" />
+        {badge}
+      </span>
+      <h2 className="text-2xl md:text-4xl font-black text-foreground mb-2">{title}</h2>
+      <p className="text-muted-foreground">{subtitle}</p>
+    </div>
+  );
+}
+
+function ProductMiniCard({
+  product,
+  onClick,
+}: {
+  product: Product;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 text-right w-full"
+    >
+      <div className="relative aspect-square overflow-hidden bg-muted/30">
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            <Package className="w-12 h-12" />
+          </div>
+        )}
+        <span
+          className={cn(
+            "absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold",
+            product.brand === "SAVERS" ? "brand-savers" : "brand-chovil"
+          )}
+        >
+          {product.brand === "SAVERS" ? (
+            <span className="inline-flex items-center gap-0.5">
+              <Leaf className="w-2.5 h-2.5" /> ساورز
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-0.5">
+              <Sparkles className="w-2.5 h-2.5" /> چویل
+            </span>
+          )}
+        </span>
+      </div>
+      <div className="p-2.5 md:p-3">
+        {product.category && (
+          <span className="text-[10px] text-muted-foreground block mb-0.5">
+            {product.category.name}
+          </span>
+        )}
+        <h3 className="font-bold text-xs md:text-sm text-foreground line-clamp-1 mb-1">
+          {product.name}
+        </h3>
+        <span className="inline-flex items-center gap-1 text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          مشاهده جزئیات
+        </span>
+      </div>
+    </button>
+  );
+}
+
+function ProductGridSkeleton() {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Skeleton key={i} className="aspect-square rounded-2xl" />
+      ))}
+    </div>
   );
 }
