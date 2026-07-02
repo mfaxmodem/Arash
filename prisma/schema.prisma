@@ -1,0 +1,131 @@
+// Prisma schema for خشکبار و ادویه‌جات ساورز و چویل
+// Food company: dried fruits, spices, sugar & candy
+// Brands: Savers (ساورز) and Chovil (چویل)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Admin users with role-based access control
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  /// bcrypt-hashed password
+  passwordHash String
+  role         String   @default("ADMIN") // ADMIN | EDITOR
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Product categories (خشکبار، ادویه‌جات، قند و شکر)
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  /// Savers or Chovil or BOTH
+  brand       String    @default("BOTH") // SAVERS | CHOvil | BOTH
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  /// Rich description can contain limited HTML
+  content     String?
+  price       Int      /// in Tomans (integer)
+  unit        String   @default("کیلوگرم") // kg, gram, pack
+  /// Available stock quantity
+  stock       Int      @default(0)
+  /// Low stock threshold for alerts
+  lowStock    Int      @default(5)
+  image       String?
+  gallery     String?  /// JSON string of image URLs
+  brand       String   @default("SAVERS") // SAVERS | CHOvil
+  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
+  weight      String?
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Hero slider images
+model Slider {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  image     String
+  link      String?
+  buttonText String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Sales representatives / agents (نمایندگان فروش)
+model Agent {
+  id        String   @id @default(cuid())
+  name      String
+  city      String
+  address   String?
+  phone     String?
+  mobile    String?
+  /// Savers or Chovil or BOTH
+  brand     String   @default("BOTH") // SAVERS | CHOvil | BOTH
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Customer testimonials (نظرات خریداران)
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  city      String?
+  rating    Int      @default(5) // 1-5
+  comment   String
+  /// PENDING | APPROVED | REJECTED
+  status    String   @default("PENDING")
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Dynamic page content (key-value store for About, Contact, etc.)
+model PageContent {
+  id        String   @id @default(cuid())
+  /// unique key like "about_title", "about_body", "contact_address"
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+/// Contact form submissions
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  /// NEW | READ | REPLIED
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

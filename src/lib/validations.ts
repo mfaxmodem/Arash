@@ -1,0 +1,121 @@
+import { z } from "zod";
+
+// ===== Input Validation Schemas (OWASP A03 - Injection / A07 - XSS) =====
+// All user input is validated server-side with strict schemas.
+
+// Sanitize string: prevent XSS by limiting length and disallowing script tags
+const safeString = (max = 500) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .refine(
+      (val) => !/<script|javascript:|onerror|onload|onclick/i.test(val),
+      "ورودی نامعتبر است"
+    );
+
+export const loginSchema = z.object({
+  email: z.string().trim().toLowerCase().email("ایمیل نامعتبر است"),
+  password: z
+    .string()
+    .min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد")
+    .max(128, "رمز عبور بسیار طولانی است"),
+});
+
+export const categorySchema = z.object({
+  name: safeString(100).min(2, "نام دسته الزامی است"),
+  slug: z
+    .string()
+    .trim()
+    .min(2)
+    .max(120)
+    .regex(/^[a-z0-9-]+$/, "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد"),
+  description: safeString(1000).optional().or(z.literal("")),
+  image: safeString(500).optional().or(z.literal("")),
+  brand: z.enum(["SAVERS", "CHOVIL", "BOTH"]).default("BOTH"),
+  sortOrder: z.number().int().min(0).max(9999).default(0),
+});
+
+export const productSchema = z.object({
+  name: safeString(150).min(2, "نام محصول الزامی است"),
+  slug: z
+    .string()
+    .trim()
+    .min(2)
+    .max(150)
+    .regex(/^[a-z0-9-]+$/, "اسلاگ نامعتبر است"),
+  description: safeString(2000).optional().or(z.literal("")),
+  content: safeString(10000).optional().or(z.literal("")),
+  price: z.number().int().min(0, "قیمت نمی‌تواند منفی باشد").max(999999999),
+  unit: safeString(50).default("کیلوگرم"),
+  stock: z.number().int().min(0).max(999999).default(0),
+  lowStock: z.number().int().min(0).max(9999).default(5),
+  image: safeString(500).optional().or(z.literal("")),
+  gallery: safeString(5000).optional().or(z.literal("")),
+  brand: z.enum(["SAVERS", "CHOVIL"]),
+  featured: z.boolean().default(false),
+  active: z.boolean().default(true),
+  weight: safeString(50).optional().or(z.literal("")),
+  categoryId: safeString(50).min(1, "دسته‌بندی الزامی است"),
+});
+
+export const sliderSchema = z.object({
+  title: safeString(150).min(2, "عنوان الزامی است"),
+  subtitle: safeString(300).optional().or(z.literal("")),
+  image: safeString(500).min(1, "تصویر الزامی است"),
+  link: safeString(500).optional().or(z.literal("")),
+  buttonText: safeString(50).optional().or(z.literal("")),
+  sortOrder: z.number().int().min(0).max(9999).default(0),
+  active: z.boolean().default(true),
+});
+
+export const agentSchema = z.object({
+  name: safeString(150).min(2, "نام الزامی است"),
+  city: safeString(100).min(2, "شهر الزامی است"),
+  address: safeString(500).optional().or(z.literal("")),
+  phone: safeString(30)
+    .optional()
+    .or(z.literal(""))
+    .refine((v) => !v || /^[\d\s+()-]+$/.test(v), "تلفن نامعتبر است"),
+  mobile: safeString(30)
+    .optional()
+    .or(z.literal(""))
+    .refine((v) => !v || /^[\d\s+()-]+$/.test(v), "موبایل نامعتبر است"),
+  brand: z.enum(["SAVERS", "CHOVIL", "BOTH"]).default("BOTH"),
+  active: z.boolean().default(true),
+  sortOrder: z.number().int().min(0).max(9999).default(0),
+});
+
+export const testimonialSchema = z.object({
+  name: safeString(100).min(2, "نام الزامی است"),
+  city: safeString(100).optional().or(z.literal("")),
+  rating: z.number().int().min(1).max(5).default(5),
+  comment: safeString(1000).min(5, "حداقل ۵ کاراکتر"),
+});
+
+export const pageContentSchema = z.object({
+  key: safeString(100).min(1, "کلید الزامی است"),
+  value: safeString(50000),
+});
+
+export const contactSchema = z.object({
+  name: safeString(100).min(2, "نام الزامی است"),
+  email: z.string().trim().toLowerCase().email("ایمیل نامعتبر است"),
+  phone: safeString(30)
+    .optional()
+    .or(z.literal(""))
+    .refine((v) => !v || /^[\d\s+()-]+$/.test(v), "تلفن نامعتبر است"),
+  subject: safeString(200).min(2, "موضوع الزامی است"),
+  message: safeString(2000).min(10, "حداقل ۱۰ کاراکتر"),
+  // CSRF honeypot field - must be empty
+  website: z.string().max(0, "bot detected").optional().or(z.literal("")),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type CategoryInput = z.infer<typeof categorySchema>;
+export type ProductInput = z.infer<typeof productSchema>;
+export type SliderInput = z.infer<typeof sliderSchema>;
+export type AgentInput = z.infer<typeof agentSchema>;
+export type TestimonialInput = z.infer<typeof testimonialSchema>;
+export type PageContentInput = z.infer<typeof pageContentSchema>;
+export type ContactInput = z.infer<typeof contactSchema>;
