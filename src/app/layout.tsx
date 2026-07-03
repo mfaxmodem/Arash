@@ -19,7 +19,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
         />
       </head>
-      <body className="font-vazir antialiased bg-background text-foreground">
+      <body className="font-vazir antialiased bg-background text-foreground" suppressHydrationWarning>
         <HtmlLangSync />
         {children}
       </body>

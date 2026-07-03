@@ -11,33 +11,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ImagePicker } from "@/components/admin/image-picker";
+import { LanguageTabs } from "@/components/admin/language-tabs";
 import { toast } from "@/lib/toast";
 import { Plus, Pencil, Trash2, Package, Search, AlertTriangle } from "lucide-react";
 
 interface FormState {
-  name: string;
+  name: string; nameEn: string; nameAr: string;
   slug: string;
-  description: string;
-  price: string;
-  unit: string;
-  stock: string;
-  lowStock: string;
-  image: string;
-  brand: "SAVERS" | "CHOVIL";
-  featured: boolean;
-  active: boolean;
-  weight: string;
-  categoryId: string;
+  description: string; descriptionEn: string; descriptionAr: string;
+  content: string; contentEn: string; contentAr: string;
+  price: string; unit: string; stock: string; lowStock: string;
+  image: string; brand: "SAVERS" | "CHOVIL";
+  featured: boolean; active: boolean; weight: string; categoryId: string;
 }
 
 const EMPTY: FormState = {
-  name: "", slug: "", description: "", price: "", unit: "کیلوگرم",
-  stock: "0", lowStock: "5", image: "", brand: "SAVERS", featured: false, active: true, weight: "", categoryId: "",
+  name: "", nameEn: "", nameAr: "",
+  slug: "",
+  description: "", descriptionEn: "", descriptionAr: "",
+  content: "", contentEn: "", contentAr: "",
+  price: "", unit: "کیلوگرم", stock: "0", lowStock: "5",
+  image: "", brand: "SAVERS", featured: false, active: true, weight: "", categoryId: "",
 };
 
 export function AdminProducts() {
@@ -60,12 +59,9 @@ export function AdminProducts() {
     queryKey: ["admin-products", page, search],
     queryFn: () => {
       const params = new URLSearchParams({ page: String(page), limit: "10" });
-      // admin needs all products; we use a separate flag via query
       return api.get<Paginated<Product>>(`/api/products?${params}&limit=20`);
     },
   });
-  // For admin we want ALL products (including inactive). The public endpoint filters active=true.
-  // We'll refetch with a dedicated admin approach below.
 
   const products = data?.items ?? [];
 
@@ -105,9 +101,13 @@ export function AdminProducts() {
   const openEdit = (p: Product) => {
     setEditing(p);
     setForm({
-      name: p.name, slug: p.slug, description: p.description || "", price: String(p.price),
-      unit: p.unit, stock: String(p.stock), lowStock: String(p.lowStock), image: p.image || "",
-      brand: p.brand, featured: p.featured, active: p.active, weight: p.weight || "", categoryId: p.categoryId,
+      name: p.name, nameEn: (p as any).nameEn || "", nameAr: (p as any).nameAr || "",
+      slug: p.slug,
+      description: p.description || "", descriptionEn: (p as any).descriptionEn || "", descriptionAr: (p as any).descriptionAr || "",
+      content: (p as any).content || "", contentEn: (p as any).contentEn || "", contentAr: (p as any).contentAr || "",
+      price: String(p.price), unit: p.unit, stock: String(p.stock), lowStock: String(p.lowStock),
+      image: p.image || "", brand: p.brand, featured: p.featured, active: p.active,
+      weight: p.weight || "", categoryId: p.categoryId,
     });
     setErrors({});
     setOpen(true);
@@ -129,21 +129,17 @@ export function AdminProducts() {
   const save = () => {
     if (!validate()) return;
     saveMutation.mutate({
-      name: form.name.trim(),
+      name: form.name.trim(), nameEn: form.nameEn.trim() || undefined, nameAr: form.nameAr.trim() || undefined,
       slug: form.slug.trim(),
-      description: form.description.trim(),
-      price: Number(form.price),
-      unit: form.unit,
-      stock: Number(form.stock),
-      lowStock: Number(form.lowStock),
-      image: form.image,
-      brand: form.brand,
-      featured: form.featured,
-      active: form.active,
-      weight: form.weight.trim(),
-      categoryId: form.categoryId,
+      description: form.description.trim() || undefined, descriptionEn: form.descriptionEn.trim() || undefined, descriptionAr: form.descriptionAr.trim() || undefined,
+      content: form.content.trim() || undefined, contentEn: form.contentEn.trim() || undefined, contentAr: form.contentAr.trim() || undefined,
+      price: Number(form.price), unit: form.unit, stock: Number(form.stock), lowStock: Number(form.lowStock),
+      image: form.image, brand: form.brand, featured: form.featured, active: form.active,
+      weight: form.weight.trim(), categoryId: form.categoryId,
     });
   };
+
+  const set = (key: keyof FormState, val: any) => setForm((f) => ({ ...f, [key]: val }));
 
   return (
     <div className="space-y-4">
@@ -164,19 +160,12 @@ export function AdminProducts() {
       {/* Search */}
       <div className="relative max-w-sm">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="جستجوی محصول..."
-          className="pr-10"
-        />
+        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="جستجوی محصول..." className="pr-10" />
       </div>
 
       {/* Table */}
       {isLoading ? (
-        <div className="space-y-2">
-          {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-lg" />)}
-        </div>
+        <div className="space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-lg" />)}</div>
       ) : (
         <div className="rounded-xl border border-border overflow-hidden">
           <div className="overflow-x-auto">
@@ -215,29 +204,18 @@ export function AdminProducts() {
                     </td>
                     <td className="p-3 text-foreground/80 whitespace-nowrap">{formatPrice(p.price)}</td>
                     <td className="p-3">
-                      <span className={cn(
-                        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold",
-                        p.stock <= 0 ? "bg-destructive/10 text-destructive" : p.stock <= p.lowStock ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"
-                      )}>
+                      <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold", p.stock <= 0 ? "bg-destructive/10 text-destructive" : p.stock <= p.lowStock ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700")}>
                         {p.stock <= p.lowStock && p.stock > 0 && <AlertTriangle className="w-3 h-3" />}
                         {toPersianDigits(p.stock)}
                       </span>
                     </td>
                     <td className="p-3">
-                      {p.active ? (
-                        <Badge className="bg-green-500 hover:bg-green-500">فعال</Badge>
-                      ) : (
-                        <Badge variant="secondary">غیرفعال</Badge>
-                      )}
+                      {p.active ? <Badge className="bg-green-500 hover:bg-green-500">فعال</Badge> : <Badge variant="secondary">غیرفعال</Badge>}
                     </td>
                     <td className="p-3">
                       <div className="flex items-center justify-center gap-1">
-                        <Button size="icon" variant="ghost" onClick={() => openEdit(p)} className="h-8 w-8">
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => setDeleteId(p.id)} className="h-8 w-8 text-destructive hover:text-destructive">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <Button size="icon" variant="ghost" onClick={() => openEdit(p)} className="h-8 w-8"><Pencil className="w-4 h-4" /></Button>
+                        <Button size="icon" variant="ghost" onClick={() => setDeleteId(p.id)} className="h-8 w-8 text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                       </div>
                     </td>
                   </tr>
@@ -245,9 +223,7 @@ export function AdminProducts() {
               </tbody>
             </table>
           </div>
-          {products.length === 0 && (
-            <div className="p-12 text-center text-muted-foreground">محصولی یافت نشد</div>
-          )}
+          {products.length === 0 && <div className="p-12 text-center text-muted-foreground">محصولی یافت نشد</div>}
         </div>
       )}
 
@@ -257,62 +233,101 @@ export function AdminProducts() {
           <DialogHeader>
             <DialogTitle>{editing ? "ویرایش محصول" : "افزودن محصول جدید"}</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-4 py-2">
-            <div className="space-y-1.5 col-span-2 sm:col-span-1">
-              <Label>نام محصول *</Label>
-              <Input
-                value={form.name}
-                onChange={(e) => {
-                  const name = e.target.value;
-                  setForm({ ...form, name, slug: editing ? form.slug : slugify(name) });
-                }}
-              />
-              {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
-            </div>
-            <div className="space-y-1.5 col-span-2 sm:col-span-1">
-              <Label>اسلاگ (URL) *</Label>
-              <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} dir="ltr" />
-              {errors.slug && <p className="text-xs text-destructive">{errors.slug}</p>}
-            </div>
-            <div className="space-y-1.5 col-span-2">
-              <Label>توضیحات</Label>
-              <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} maxLength={2000} />
-            </div>
+
+          <LanguageTabs
+            fa={
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                    <Label>نام محصول (فارسی) *</Label>
+                    <Input value={form.name} onChange={(e) => { const n = e.target.value; setForm({ ...form, name: n, slug: editing ? form.slug : slugify(n) }); }} />
+                    {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+                  </div>
+                  <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                    <Label>اسلاگ (URL) *</Label>
+                    <Input value={form.slug} onChange={(e) => set("slug", slugify(e.target.value))} dir="ltr" />
+                    {errors.slug && <p className="text-xs text-destructive">{errors.slug}</p>}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>توضیحات (فارسی)</Label>
+                  <Textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={2} maxLength={2000} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>محتوای کامل (فارسی)</Label>
+                  <Textarea value={form.content} onChange={(e) => set("content", e.target.value)} rows={4} maxLength={10000} />
+                </div>
+              </>
+            }
+            en={
+              <>
+                <div className="space-y-1.5">
+                  <Label>Product Name (EN)</Label>
+                  <Input value={form.nameEn} onChange={(e) => set("nameEn", e.target.value)} dir="ltr" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Description (EN)</Label>
+                  <Textarea value={form.descriptionEn} onChange={(e) => set("descriptionEn", e.target.value)} rows={2} maxLength={2000} dir="ltr" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Full Content (EN)</Label>
+                  <Textarea value={form.contentEn} onChange={(e) => set("contentEn", e.target.value)} rows={4} maxLength={10000} dir="ltr" />
+                </div>
+              </>
+            }
+            ar={
+              <>
+                <div className="space-y-1.5">
+                  <Label>اسم المنتج (AR)</Label>
+                  <Input value={form.nameAr} onChange={(e) => set("nameAr", e.target.value)} dir="rtl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>الوصف (AR)</Label>
+                  <Textarea value={form.descriptionAr} onChange={(e) => set("descriptionAr", e.target.value)} rows={2} maxLength={2000} dir="rtl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>المحتوى الكامل (AR)</Label>
+                  <Textarea value={form.contentAr} onChange={(e) => set("contentAr", e.target.value)} rows={4} maxLength={10000} dir="rtl" />
+                </div>
+              </>
+            }
+          />
+
+          {/* Shared fields */}
+          <div className="grid grid-cols-2 gap-4 pt-2 border-t">
             <div className="space-y-1.5">
               <Label>قیمت (تومان) *</Label>
-              <Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} dir="ltr" type="number" />
+              <Input value={form.price} onChange={(e) => set("price", e.target.value)} dir="ltr" type="number" />
               {errors.price && <p className="text-xs text-destructive">{errors.price}</p>}
             </div>
             <div className="space-y-1.5">
               <Label>واحد</Label>
-              <Input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} />
+              <Input value={form.unit} onChange={(e) => set("unit", e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>موجودی *</Label>
-              <Input value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} dir="ltr" type="number" />
+              <Input value={form.stock} onChange={(e) => set("stock", e.target.value)} dir="ltr" type="number" />
               {errors.stock && <p className="text-xs text-destructive">{errors.stock}</p>}
             </div>
             <div className="space-y-1.5">
               <Label>هشدار موجودی کم</Label>
-              <Input value={form.lowStock} onChange={(e) => setForm({ ...form, lowStock: e.target.value })} dir="ltr" type="number" />
+              <Input value={form.lowStock} onChange={(e) => set("lowStock", e.target.value)} dir="ltr" type="number" />
             </div>
             <div className="space-y-1.5">
               <Label>وزن/بسته‌بندی</Label>
-              <Input value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} placeholder="مثلا: ۱ کیلوگرم" />
+              <Input value={form.weight} onChange={(e) => set("weight", e.target.value)} placeholder="مثلا: ۱ کیلوگرم" />
             </div>
             <div className="space-y-1.5">
               <Label>دسته‌بندی *</Label>
-              <Select value={form.categoryId} onValueChange={(v) => setForm({ ...form, categoryId: v })}>
+              <Select value={form.categoryId} onValueChange={(v) => set("categoryId", v)}>
                 <SelectTrigger><SelectValue placeholder="انتخاب کنید" /></SelectTrigger>
-                <SelectContent className="z-[110]">
-                  {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
+                <SelectContent className="z-[110]">{categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
               {errors.categoryId && <p className="text-xs text-destructive">{errors.categoryId}</p>}
             </div>
             <div className="space-y-1.5">
               <Label>برند</Label>
-              <Select value={form.brand} onValueChange={(v: any) => setForm({ ...form, brand: v })}>
+              <Select value={form.brand} onValueChange={(v: any) => set("brand", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent className="z-[110]">
                   <SelectItem value="SAVERS">ساورز</SelectItem>
@@ -321,23 +336,18 @@ export function AdminProducts() {
               </Select>
             </div>
             <div className="col-span-2">
-              <ImagePicker value={form.image} onChange={(v) => setForm({ ...form, image: v })} label="تصویر محصول" />
+              <ImagePicker value={form.image} onChange={(v) => set("image", v)} label="تصویر محصول" />
             </div>
             <div className="flex items-center justify-between col-span-2 rounded-lg border p-3">
-              <div>
-                <Label>محصول ویژه</Label>
-                <p className="text-xs text-muted-foreground">در صفحه اصلی نمایش داده می‌شود</p>
-              </div>
-              <Switch checked={form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} />
+              <div><Label>محصول ویژه</Label><p className="text-xs text-muted-foreground">در صفحه اصلی نمایش داده می‌شود</p></div>
+              <Switch checked={form.featured} onCheckedChange={(v) => set("featured", v)} />
             </div>
             <div className="flex items-center justify-between col-span-2 rounded-lg border p-3">
-              <div>
-                <Label>فعال</Label>
-                <p className="text-xs text-muted-foreground">در سایت نمایش داده می‌شود</p>
-              </div>
-              <Switch checked={form.active} onCheckedChange={(v) => setForm({ ...form, active: v })} />
+              <div><Label>فعال</Label><p className="text-xs text-muted-foreground">در سایت نمایش داده می‌شود</p></div>
+              <Switch checked={form.active} onCheckedChange={(v) => set("active", v)} />
             </div>
           </div>
+
           <div className="flex gap-2 pt-2">
             <Button onClick={save} disabled={saveMutation.isPending} className="gap-2 flex-1">
               {saveMutation.isPending ? "در حال ذخیره..." : "ذخیره"}
@@ -349,19 +359,14 @@ export function AdminProducts() {
 
       {/* Delete confirm */}
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-            <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
+        <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader>
             <AlertDialogTitle>حذف محصول</AlertDialogTitle>
             <AlertDialogDescription>آیا از حذف این محصول مطمئن هستید؟ این عمل قابل بازگشت نیست.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>انصراف</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteId && deleteMutation.mutate(deleteId)}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              حذف
-            </AlertDialogAction>
+            <AlertDialogAction onClick={() => deleteId && deleteMutation.mutate(deleteId)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
