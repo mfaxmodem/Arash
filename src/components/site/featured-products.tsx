@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
 import { Leaf, Sparkles, Package } from "lucide-react";
+import { AutoCarousel } from "@/components/site/auto-carousel";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -29,9 +30,9 @@ export function FeaturedProducts() {
   const savers = all.filter((p) => p.brand === "SAVERS");
   const chovil = all.filter((p) => p.brand === "CHOVIL");
 
-  const randomAll = shuffle(all).slice(0, 6);
-  const randomChovil = shuffle(chovil).slice(0, 6);
-  const randomSavers = shuffle(savers).slice(0, 6);
+  const randomAll = shuffle(all).slice(0, 12);
+  const randomChovil = shuffle(chovil).slice(0, 12);
+  const randomSavers = shuffle(savers).slice(0, 12);
 
   return (
     <section className="py-16 md:py-20 bg-background">
@@ -47,11 +48,11 @@ export function FeaturedProducts() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <AutoCarousel threshold={6}>
               {randomAll.map((p) => (
                 <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
               ))}
-            </div>
+            </AutoCarousel>
           )}
         </div>
 
@@ -67,11 +68,11 @@ export function FeaturedProducts() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <AutoCarousel threshold={6}>
               {randomChovil.map((p) => (
                 <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
               ))}
-            </div>
+            </AutoCarousel>
           )}
         </div>
 
@@ -87,11 +88,11 @@ export function FeaturedProducts() {
           {isLoading ? (
             <ProductGridSkeleton />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <AutoCarousel threshold={6}>
               {randomSavers.map((p) => (
                 <ProductMiniCard key={p.id} product={p} onClick={() => openProduct(p.id)} />
               ))}
-            </div>
+            </AutoCarousel>
           )}
         </div>
       </div>

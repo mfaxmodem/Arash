@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useNav } from "@/store/nav-store";
 import { Button } from "@/components/ui/button";
 import { Star, Quote, User, MessageSquareQuote, ArrowLeft } from "lucide-react";
+import { AutoCarousel } from "@/components/site/auto-carousel";
 
 export function TestimonialPreview() {
   const { setView } = useNav();
@@ -14,30 +15,34 @@ export function TestimonialPreview() {
     queryKey: ["testimonials-public"],
     queryFn: () => api.get<{ items: Testimonial[] }>("/api/testimonials"),
   });
-  const testimonials = (data?.items ?? []).slice(0, 3);
+  const testimonials = (data?.items ?? []).slice(0, 9);
 
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="py-20 bg-spice-gradient">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-          <div>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/60 text-foreground text-sm mb-3">
-              <MessageSquareQuote className="w-4 h-4" />
-              رضایت مشتریان
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground">
-              نظرات مشتریان ما
-            </h2>
-          </div>
-          <Button variant="outline" onClick={() => setView("testimonials")} className="gap-2 bg-white/70">
+        <div className="mb-10 text-center">
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-3 font-bold">
+            <MessageSquareQuote className="w-4 h-4" />
+            رضایت مشتریان
+          </span>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">
+            نظرات مشتریان ما
+          </h2>
+          <p className="text-muted-foreground mb-6">آنچه مشتریان ما می‌گویند</p>
+          <Button variant="outline" onClick={() => setView("testimonials")} className="gap-2">
             همه نظرات
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <AutoCarousel
+          threshold={3}
+          gridClass="grid md:grid-cols-3 gap-6"
+          slideClass="flex-[0_0_100%] md:flex-[0_0_33.333%]"
+          gapClass="gap-6"
+        >
           {testimonials.map((t) => (
             <article
               key={t.id}
@@ -69,7 +74,7 @@ export function TestimonialPreview() {
               </div>
             </article>
           ))}
-        </div>
+        </AutoCarousel>
       </div>
     </section>
   );
