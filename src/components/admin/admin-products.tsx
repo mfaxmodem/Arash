@@ -252,8 +252,8 @@ export function AdminProducts() {
       )}
 
       {/* Edit dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setEditing(null); setForm(EMPTY); setErrors({}); } setOpen(o); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-[110]" overlayClassName="z-[110]">
           <DialogHeader>
             <DialogTitle>{editing ? "ویرایش محصول" : "افزودن محصول جدید"}</DialogTitle>
           </DialogHeader>
@@ -304,7 +304,7 @@ export function AdminProducts() {
               <Label>دسته‌بندی *</Label>
               <Select value={form.categoryId} onValueChange={(v) => setForm({ ...form, categoryId: v })}>
                 <SelectTrigger><SelectValue placeholder="انتخاب کنید" /></SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[110]">
                   {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
                 </SelectContent>
               </Select>
@@ -314,7 +314,7 @@ export function AdminProducts() {
               <Label>برند</Label>
               <Select value={form.brand} onValueChange={(v: any) => setForm({ ...form, brand: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[110]">
                   <SelectItem value="SAVERS">ساورز</SelectItem>
                   <SelectItem value="CHOVIL">چویل</SelectItem>
                 </SelectContent>
@@ -349,7 +349,7 @@ export function AdminProducts() {
 
       {/* Delete confirm */}
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
+            <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader>
             <AlertDialogTitle>حذف محصول</AlertDialogTitle>
             <AlertDialogDescription>آیا از حذف این محصول مطمئن هستید؟ این عمل قابل بازگشت نیست.</AlertDialogDescription>

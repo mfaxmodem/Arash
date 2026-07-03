@@ -140,8 +140,8 @@ export function AdminBlog() {
         </div>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setEditing(null); setForm({ title: "", slug: "", excerpt: "", content: "", image: "", author: "تیم ساورز و چویل", tags: "", published: false }); } setOpen(o); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-[110]" overlayClassName="z-[110]">
           <DialogHeader>
             <DialogTitle>{editing ? "ویرایش مقاله" : "افزودن مقاله جدید"}</DialogTitle>
           </DialogHeader>
@@ -198,7 +198,7 @@ export function AdminBlog() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
+          <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader>
             <AlertDialogTitle>حذف مقاله</AlertDialogTitle>
             <AlertDialogDescription>آیا از حذف این مقاله مطمئن هستید؟</AlertDialogDescription>

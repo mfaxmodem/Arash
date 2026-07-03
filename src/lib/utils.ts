@@ -54,7 +54,7 @@ export function slugify(text: string): string {
     .trim()
     .toLowerCase()
     .replace(/[\s_]+/g, "-")
-    .replace(/[^\u0600-\u06FFa-z0-9-]/g, "")
+    .replace(/[^\u0600-\u06FF\uFB50-\uFDFF\uFE70-\uFEFFa-z0-9\u06F0-\u06F9-]/g, "")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 }

@@ -144,16 +144,16 @@ export function AdminShell({ user }: { user: { email: string; name: string; role
       {/* Content */}
       <div className="flex-1 overflow-y-auto bg-background custom-scroll">
         <div className="p-4 md:p-6 max-w-7xl mx-auto">
-          {adminTab === "dashboard" && <AdminDashboard />}
-          {adminTab === "products" && <AdminProducts />}
-          {adminTab === "categories" && <AdminCategories />}
-          {adminTab === "sliders" && <AdminSliders />}
-          {adminTab === "agents" && <AdminAgents />}
-          {adminTab === "testimonials" && <AdminTestimonials />}
-          {adminTab === "productComments" && <AdminProductComments />}
-          {adminTab === "blog" && <AdminBlog />}
-          {adminTab === "content" && <AdminContent />}
-          {adminTab === "messages" && <AdminMessages />}
+          <div className={cn(adminTab === "dashboard" ? "block" : "hidden")}><AdminDashboard /></div>
+          <div className={cn(adminTab === "products" ? "block" : "hidden")}><AdminProducts /></div>
+          <div className={cn(adminTab === "categories" ? "block" : "hidden")}><AdminCategories /></div>
+          <div className={cn(adminTab === "sliders" ? "block" : "hidden")}><AdminSliders /></div>
+          <div className={cn(adminTab === "agents" ? "block" : "hidden")}><AdminAgents /></div>
+          <div className={cn(adminTab === "testimonials" ? "block" : "hidden")}><AdminTestimonials /></div>
+          <div className={cn(adminTab === "productComments" ? "block" : "hidden")}><AdminProductComments /></div>
+          <div className={cn(adminTab === "blog" ? "block" : "hidden")}><AdminBlog /></div>
+          <div className={cn(adminTab === "content" ? "block" : "hidden")}><AdminContent /></div>
+          <div className={cn(adminTab === "messages" ? "block" : "hidden")}><AdminMessages /></div>
         </div>
       </div>
     </div>

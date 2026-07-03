@@ -126,8 +126,8 @@ export function AdminCategories() {
         </div>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setEditing(null); setForm({ name: "", slug: "", description: "", image: "", brand: "BOTH", sortOrder: "0" }); } setOpen(o); }}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto z-[110]" overlayClassName="z-[110]">
           <DialogHeader><DialogTitle>{editing ? "ویرایش دسته" : "افزودن دسته جدید"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
@@ -147,7 +147,7 @@ export function AdminCategories() {
                 <Label>برند</Label>
                 <Select value={form.brand} onValueChange={(v) => setForm({ ...form, brand: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{BRANDS.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}</SelectContent>
+                  <SelectContent className="z-[110]">{BRANDS.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
@@ -165,7 +165,7 @@ export function AdminCategories() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
+          <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader>
             <AlertDialogTitle>حذف دسته</AlertDialogTitle>
             <AlertDialogDescription>اگر این دسته دارای محصول باشد قابل حذف نیست.</AlertDialogDescription>

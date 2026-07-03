@@ -101,8 +101,8 @@ export function AdminAgents() {
         </div>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setEditing(null); setForm({ name: "", city: "", address: "", phone: "", mobile: "", brand: "BOTH", active: true, sortOrder: "0" }); } setOpen(o); }}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto z-[110]" overlayClassName="z-[110]">
           <DialogHeader><DialogTitle>{editing ? "ویرایش نماینده" : "افزودن نماینده"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-4">
@@ -119,7 +119,7 @@ export function AdminAgents() {
                 <Label>برند</Label>
                 <Select value={form.brand} onValueChange={(v) => setForm({ ...form, brand: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[110]">
                     <SelectItem value="BOTH">هر دو برند</SelectItem>
                     <SelectItem value="SAVERS">ساورز</SelectItem>
                     <SelectItem value="CHOVIL">چویل</SelectItem>
@@ -141,7 +141,7 @@ export function AdminAgents() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
+          <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader><AlertDialogTitle>حذف نماینده</AlertDialogTitle><AlertDialogDescription>آیا مطمئن هستید؟</AlertDialogDescription></AlertDialogHeader>
           <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={() => deleteId && delMut.mutate(deleteId)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>

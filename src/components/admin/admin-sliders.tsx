@@ -98,8 +98,8 @@ export function AdminSliders() {
         </div>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <Dialog open={open} onOpenChange={(o) => { if (!o) { setEditing(null); setForm({ title: "", subtitle: "", image: "", link: "", buttonText: "", sortOrder: "0", active: true }); } setOpen(o); }}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto z-[110]" overlayClassName="z-[110]">
           <DialogHeader><DialogTitle>{editing ? "ویرایش اسلاید" : "افزودن اسلاید"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5"><Label>عنوان *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} maxLength={150} /></div>
@@ -125,7 +125,7 @@ export function AdminSliders() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-        <AlertDialogContent>
+          <AlertDialogContent className="z-[110]" overlayClassName="z-[110]">
           <AlertDialogHeader><AlertDialogTitle>حذف اسلاید</AlertDialogTitle><AlertDialogDescription>آیا مطمئن هستید؟</AlertDialogDescription></AlertDialogHeader>
           <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={() => deleteId && delMut.mutate(deleteId)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
