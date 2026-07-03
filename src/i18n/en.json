@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Savers & Chovil | Nuts, Spices, Sugar & Candy",
+    "description": "Premium nuts, spices, sugar and candy from two exclusive brands: Savers and Chovil. Guaranteed quality."
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "agents": "Representatives",
+    "blog": "Blog",
+    "testimonials": "Reviews",
+    "about": "About Us",
+    "contact": "Contact"
+  },
+  "hero": {
+    "subtitle": "Nuts & Spices",
+    "cta": "View Products"
+  },
+  "products": {
+    "featured_badge": "Featured",
+    "featured_title": "Featured Products",
+    "featured_subtitle": "A selection of our best products",
+    "savers_badge": "Savers",
+    "savers_title": "Savers Brand Products",
+    "savers_subtitle": "Fresh and quality nuts and dried fruits",
+    "chovil_badge": "Chovil",
+    "chovil_title": "Chovil Brand Products",
+    "chovil_subtitle": "Pure spices and premium sugar & candy",
+    "view_details": "View Details",
+    "all_products": "All Products",
+    "search_placeholder": "Search products...",
+    "no_products": "No products found"
+  },
+  "testimonials": {
+    "badge": "Customer Satisfaction",
+    "title": "Our Customer Reviews",
+    "subtitle": "What our customers say",
+    "all_reviews": "All Reviews"
+  },
+  "blog": {
+    "badge": "Magazine & Blog",
+    "title": "Latest Articles",
+    "all_articles": "All Articles",
+    "read_more": "Read More",
+    "no_articles": "No articles available"
+  },
+  "about": {
+    "title": "About Savers & Chovil",
+    "quality_badge": "Guaranteed Quality",
+    "quality_sub": "National Health Standard",
+    "stats": {
+      "experience": "Years of Experience",
+      "agents": "Active Representatives",
+      "quality": "Guaranteed Quality",
+      "customers": "Satisfied Customers"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "form_name": "Full Name",
+    "form_email": "Email",
+    "form_phone": "Phone",
+    "form_subject": "Subject",
+    "form_message": "Your Message",
+    "form_submit": "Send Message",
+    "info_title": "Contact Information",
+    "address": "Address",
+    "phone": "Landline",
+    "mobile": "Mobile",
+    "email": "Email",
+    "hours": "Working Hours"
+  },
+  "footer": {
+    "description": "Sales and packaging of nuts, spices, sugar and candy with guaranteed quality and nationwide delivery.",
+    "quick_links": "Quick Links",
+    "our_brands": "Our Brands",
+    "savers_desc": "Savers - Nuts & Dried Fruits",
+    "chovil_desc": "Chovil - Spices & Sugar",
+    "contact_info": "Contact Information",
+    "copyright": "All rights reserved for Savers & Chovil Company.",
+    "made_with": "Made with",
+    "for_customers": "for our valued customers"
+  },
+  "agents": {
+    "title": "Sales Representatives",
+    "subtitle": "Our sales representatives across the country",
+    "phone": "Phone",
+    "mobile": "Mobile",
+    "no_agents": "No representatives found"
+  },
+  "brands": {
+    "savers": "Savers",
+    "chovil": "Chovil",
+    "both": "Both"
+  }
+}

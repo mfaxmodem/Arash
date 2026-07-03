@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { Search, Package, Leaf, Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
 
 const PAGE_SIZE = 12;
 
 export function ProductsSection() {
   const { openProduct } = useNav();
+  const { locale } = useTranslation();
   const [page, setPage] = useState(1);
   const [categoryId, setCategoryId] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
@@ -23,14 +25,14 @@ export function ProductsSection() {
   const [searchInput, setSearchInput] = useState("");
 
   const { data: catData } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => api.get<{ items: Category[] }>("/api/categories"),
+    queryKey: ["categories", locale],
+    queryFn: () => api.get<{ items: Category[] }>(`/api/categories?lang=${locale}`),
   });
   const categories = catData?.items ?? [];
 
   const queryKey = useMemo(
-    () => ["products", page, categoryId, brand, search],
-    [page, categoryId, brand, search]
+    () => ["products", page, categoryId, brand, search, locale],
+    [page, categoryId, brand, search, locale]
   );
 
   const { data, isLoading } = useQuery({
@@ -39,6 +41,7 @@ export function ProductsSection() {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(PAGE_SIZE),
+        lang: locale,
       });
       if (categoryId) params.set("categoryId", categoryId);
       if (brand) params.set("brand", brand);

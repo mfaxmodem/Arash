@@ -6,6 +6,7 @@ import type { Product, Paginated } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { Leaf, Sparkles, Package } from "lucide-react";
 import { AutoCarousel } from "@/components/site/auto-carousel";
 
@@ -20,11 +21,12 @@ function shuffle<T>(arr: T[]): T[] {
 
 export function FeaturedProducts() {
   const { openProduct } = useNav();
+  const { locale } = useTranslation();
 
   // Fetch a larger pool and shuffle client-side for randomness on each load
   const { data, isLoading } = useQuery({
-    queryKey: ["products-featured-pool"],
-    queryFn: () => api.get<Paginated<Product>>("/api/products?limit=100"),
+    queryKey: ["products-featured-pool", locale],
+    queryFn: () => api.get<Paginated<Product>>(`/api/products?limit=100&lang=${locale}`),
   });
   const all = data?.items ?? [];
   const savers = all.filter((p) => p.brand === "SAVERS");

@@ -24,7 +24,7 @@ export function AdminPanel() {
       ),
     retry: false,
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
   });
 
   // Lock body scroll when admin is open

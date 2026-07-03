@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { toast } from "@/lib/toast";
 import {
   ArrowRight,
@@ -26,11 +27,12 @@ import {
 
 export function ProductDetail() {
   const { selectedProductId, setView, openProduct } = useNav();
+  const { locale } = useTranslation();
   const qc = useQueryClient();
 
   const { data: product, isLoading } = useQuery({
-    queryKey: ["product", selectedProductId],
-    queryFn: () => api.get<Product>(`/api/products/${selectedProductId}`),
+    queryKey: ["product", selectedProductId, locale],
+    queryFn: () => api.get<Product>(`/api/products/${selectedProductId}?lang=${locale}`),
     enabled: !!selectedProductId,
   });
 

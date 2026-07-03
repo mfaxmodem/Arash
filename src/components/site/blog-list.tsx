@@ -7,16 +7,18 @@ import type { BlogPost } from "@/lib/types";
 import { formatPersianDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { Newspaper, ArrowLeft, Calendar, User, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export function BlogList() {
   const { openBlog } = useNav();
+  const { locale } = useTranslation();
   const [search, setSearch] = useState("");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["blog-public"],
-    queryFn: () => api.get<{ items: BlogPost[] }>("/api/blog"),
+    queryKey: ["blog-public", locale],
+    queryFn: () => api.get<{ items: BlogPost[] }>(`/api/blog?lang=${locale}`),
   });
   const posts = data?.items ?? [];
   const filtered = search

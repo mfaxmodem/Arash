@@ -1,11 +1,14 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { blogPostSchema } from "@/lib/validations";
+import { localizeItem, LOCALIZABLE } from "@/lib/localize";
+import type { Locale } from "@/i18n";
 
 // GET /api/blog - public published posts (or all for admin with ?all=true)
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const all = searchParams.get("all") === "true";
+  const lang = (searchParams.get("lang") || "fa") as Locale;
 
   if (all) {
     const auth = await requireAdmin();
@@ -20,7 +23,11 @@ export async function GET(req: Request) {
     where: { published: true },
     orderBy: { createdAt: "desc" },
   });
-  return jsonResponse({ items });
+
+  // Apply localization for public requests
+  const localized = items.map((item) => localizeItem(item, LOCALIZABLE.blogPost, lang));
+
+  return jsonResponse({ items: localized });
 }
 
 // POST /api/blog - admin create

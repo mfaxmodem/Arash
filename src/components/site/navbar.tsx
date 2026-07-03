@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Menu, Leaf, Sparkles } from "lucide-react";
 import { useBrandIcons } from "@/hooks/use-brand-icons";
+import { useTranslation } from "@/contexts/language-context";
+import { LanguageSwitcher } from "@/components/site/language-switcher";
 
 const NAV_ITEMS: { label: string; view: View }[] = [
   { label: "خانه", view: "home" },
@@ -21,7 +23,18 @@ const NAV_ITEMS: { label: string; view: View }[] = [
 export function Navbar() {
   const { view, setView } = useNav();
   const { saversIcon, chovilIcon } = useBrandIcons();
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
+
+  const NAV_ITEMS: { label: string; view: View }[] = [
+    { label: t.nav.home, view: "home" },
+    { label: t.nav.products, view: "products" },
+    { label: t.nav.agents, view: "agents" },
+    { label: t.nav.blog, view: "blog" },
+    { label: t.nav.testimonials, view: "testimonials" },
+    { label: t.nav.about, view: "about" },
+    { label: t.nav.contact, view: "contact" },
+  ];
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -98,18 +111,20 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Mobile menu */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant={scrolled ? "outline" : "secondary"}
-                size="icon"
-                className={cn("lg:hidden", !scrolled && "bg-white/90")}
-                aria-label="منو"
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
-            </SheetTrigger>
+          {/* Language switcher + Mobile menu */}
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher scrolled={scrolled} />
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant={scrolled ? "outline" : "secondary"}
+                  size="icon"
+                  className={cn("lg:hidden", !scrolled && "bg-white/90")}
+                  aria-label="منو"
+                >
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
             <SheetContent side="right" className="w-72 p-0">
               <div className="flex flex-col h-full">
                 <div className="p-6 border-b">
@@ -137,6 +152,7 @@ export function Navbar() {
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </div>
     </header>

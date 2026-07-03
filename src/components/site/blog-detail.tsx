@@ -6,21 +6,23 @@ import type { BlogPost } from "@/lib/types";
 import { formatPersianDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, User, Newspaper, AlertCircle, Tag } from "lucide-react";
 
 export function BlogDetail() {
   const { selectedBlogId, setView, openBlog } = useNav();
+  const { locale } = useTranslation();
 
   const { data: post, isLoading } = useQuery({
-    queryKey: ["blog-post", selectedBlogId],
-    queryFn: () => api.get<BlogPost>(`/api/blog/${selectedBlogId}`),
+    queryKey: ["blog-post", selectedBlogId, locale],
+    queryFn: () => api.get<BlogPost>(`/api/blog/${selectedBlogId}?lang=${locale}`),
     enabled: !!selectedBlogId,
   });
 
   const { data: allData } = useQuery({
-    queryKey: ["blog-public"],
-    queryFn: () => api.get<{ items: BlogPost[] }>("/api/blog"),
+    queryKey: ["blog-public", locale],
+    queryFn: () => api.get<{ items: BlogPost[] }>(`/api/blog?lang=${locale}`),
   });
   const related = (allData?.items ?? [])
     .filter((p) => p.id !== selectedBlogId)

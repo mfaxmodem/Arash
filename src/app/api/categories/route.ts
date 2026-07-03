@@ -1,14 +1,23 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { categorySchema } from "@/lib/validations";
+import { localizeItem, LOCALIZABLE } from "@/lib/localize";
+import type { Locale } from "@/i18n";
 
 // GET /api/categories - public list (all, including inactive for nav)
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const lang = (searchParams.get("lang") || "fa") as Locale;
+
   const items = await db.category.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: { _count: { select: { products: { where: { active: true } } } } },
   });
-  return jsonResponse({ items });
+
+  // Apply localization
+  const localized = items.map((item) => localizeItem(item, LOCALIZABLE.category, lang));
+
+  return jsonResponse({ items: localized });
 }
 
 // POST /api/categories - admin create

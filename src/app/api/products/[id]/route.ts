@@ -1,16 +1,28 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { productSchema } from "@/lib/validations";
+import { localizeItem, LOCALIZABLE } from "@/lib/localize";
+import type { Locale } from "@/i18n";
 
 // GET /api/products/[id]
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const { searchParams } = new URL(req.url);
+  const lang = (searchParams.get("lang") || "fa") as Locale;
+
   const product = await db.product.findUnique({
     where: { id },
     include: { category: true },
   });
   if (!product) return errorResponse("محصول یافت نشد", 404);
-  return jsonResponse(product);
+
+  // Apply localization
+  let result = localizeItem(product, LOCALIZABLE.product, lang);
+  if (result.category) {
+    result = { ...result, category: localizeItem(result.category, LOCALIZABLE.category, lang) };
+  }
+
+  return jsonResponse(result);
 }
 
 // PUT /api/products/[id] - admin update

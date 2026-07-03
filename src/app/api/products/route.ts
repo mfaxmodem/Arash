@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { productSchema } from "@/lib/validations";
+import { localizeItem, LOCALIZABLE } from "@/lib/localize";
+import type { Locale } from "@/i18n";
 
 // GET /api/products - public list with filters & pagination
 export async function GET(req: Request) {
@@ -11,6 +13,7 @@ export async function GET(req: Request) {
   const brand = searchParams.get("brand") || undefined;
   const search = searchParams.get("search") || undefined;
   const featured = searchParams.get("featured");
+  const lang = (searchParams.get("lang") || "fa") as Locale;
 
   const where: any = { active: true };
   if (categoryId) where.categoryId = categoryId;
@@ -29,8 +32,17 @@ export async function GET(req: Request) {
     }),
   ]);
 
+  // Apply localization to products and their categories
+  const localized = items.map((item) => {
+    const product = localizeItem(item, LOCALIZABLE.product, lang);
+    if (product.category) {
+      product.category = localizeItem(product.category, LOCALIZABLE.category, lang);
+    }
+    return product;
+  });
+
   return jsonResponse({
-    items,
+    items: localized,
     total,
     page,
     limit,

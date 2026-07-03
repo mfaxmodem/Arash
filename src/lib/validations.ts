@@ -22,15 +22,23 @@ export const loginSchema = z.object({
     .max(128, "رمز عبور بسیار طولانی است"),
 });
 
+// Persian/Arabic slug regex: allows a-z, 0-9, dash, Persian chars (\u0600-\u06FF), and ZWNJ (half-space \u200C)
+const SLUG_REGEX = /^[a-z0-9\u0600-\u06FF\u200C-]+$/;
+const SLUG_MESSAGE = "اسلاگ فقط شامل حروف (انگلیسی/فارسی)، عدد، خط تیره و نیم‌فاصله باشد";
+
 export const categorySchema = z.object({
   name: safeString(100).min(2, "نام دسته الزامی است"),
+  nameEn: safeString(100).optional().or(z.literal("")),
+  nameAr: safeString(100).optional().or(z.literal("")),
   slug: z
     .string()
     .trim()
     .min(2)
     .max(120)
-    .regex(/^[a-z0-9-]+$/, "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد"),
+    .regex(SLUG_REGEX, SLUG_MESSAGE),
   description: safeString(1000).optional().or(z.literal("")),
+  descriptionEn: safeString(1000).optional().or(z.literal("")),
+  descriptionAr: safeString(1000).optional().or(z.literal("")),
   image: safeString(500).optional().or(z.literal("")),
   brand: z.enum(["SAVERS", "CHOVIL", "BOTH"]).default("BOTH"),
   sortOrder: z.number().int().min(0).max(9999).default(0),
@@ -38,14 +46,20 @@ export const categorySchema = z.object({
 
 export const productSchema = z.object({
   name: safeString(150).min(2, "نام محصول الزامی است"),
+  nameEn: safeString(150).optional().or(z.literal("")),
+  nameAr: safeString(150).optional().or(z.literal("")),
   slug: z
     .string()
     .trim()
     .min(2)
     .max(150)
-    .regex(/^[a-z0-9-]+$/, "اسلاگ نامعتبر است"),
+    .regex(SLUG_REGEX, SLUG_MESSAGE),
   description: safeString(2000).optional().or(z.literal("")),
+  descriptionEn: safeString(2000).optional().or(z.literal("")),
+  descriptionAr: safeString(2000).optional().or(z.literal("")),
   content: safeString(10000).optional().or(z.literal("")),
+  contentEn: safeString(10000).optional().or(z.literal("")),
+  contentAr: safeString(10000).optional().or(z.literal("")),
   price: z.number().int().min(0, "قیمت نمی‌تواند منفی باشد").max(999999999),
   unit: safeString(50).default("کیلوگرم"),
   stock: z.number().int().min(0).max(999999).default(0),
@@ -101,14 +115,20 @@ export const productCommentSchema = z.object({
 
 export const blogPostSchema = z.object({
   title: safeString(200).min(2, "عنوان الزامی است"),
+  titleEn: safeString(200).optional().or(z.literal("")),
+  titleAr: safeString(200).optional().or(z.literal("")),
   slug: z
     .string()
     .trim()
     .min(2)
     .max(200)
-    .regex(/^[a-z0-9-]+$/, "اسلاگ نامعتبر است"),
+    .regex(SLUG_REGEX, SLUG_MESSAGE),
   excerpt: safeString(500).optional().or(z.literal("")),
+  excerptEn: safeString(500).optional().or(z.literal("")),
+  excerptAr: safeString(500).optional().or(z.literal("")),
   content: safeString(50000).min(5, "محتوا الزامی است"),
+  contentEn: safeString(50000).optional().or(z.literal("")),
+  contentAr: safeString(50000).optional().or(z.literal("")),
   image: safeString(500).optional().or(z.literal("")),
   author: safeString(100).default("تیم ساورز و چویل"),
   tags: safeString(500).optional().or(z.literal("")),

@@ -25,43 +25,55 @@ model User {
 
 /// Product categories (خشکبار، ادویه‌جات، قند و شکر)
 model Category {
-  id          String    @id @default(cuid())
-  name        String
-  slug        String    @unique
-  description String?
-  image       String?
+  id              String    @id @default(cuid())
+  name            String
+  /// English name (optional, falls back to name)
+  nameEn          String?
+  /// Arabic name (optional, falls back to name)
+  nameAr          String?
+  slug            String    @unique
+  description     String?
+  descriptionEn   String?
+  descriptionAr   String?
+  image           String?
   /// Savers or Chovil or BOTH
-  brand       String    @default("BOTH") // SAVERS | CHOvil | BOTH
-  sortOrder   Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
+  brand           String    @default("BOTH") // SAVERS | CHOvil | BOTH
+  sortOrder       Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  products        Product[]
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
+  id            String   @id @default(cuid())
+  name          String
+  nameEn        String?
+  nameAr        String?
+  slug          String   @unique
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
   /// Rich description can contain limited HTML
-  content     String?
-  price       Int      /// in Tomans (integer)
-  unit        String   @default("کیلوگرم") // kg, gram, pack
+  content       String?
+  contentEn     String?
+  contentAr     String?
+  price         Int      /// in Tomans (integer)
+  unit          String   @default("کیلوگرم") // kg, gram, pack
   /// Available stock quantity
-  stock       Int      @default(0)
+  stock         Int      @default(0)
   /// Low stock threshold for alerts
-  lowStock    Int      @default(5)
-  image       String?
-  gallery     String?  /// JSON string of image URLs
-  brand       String   @default("SAVERS") // SAVERS | CHOvil
-  featured    Boolean  @default(false)
-  active      Boolean  @default(true)
-  weight      String?
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  comments    ProductComment[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  lowStock      Int      @default(5)
+  image         String?
+  gallery       String?  /// JSON string of image URLs
+  brand         String   @default("SAVERS") // SAVERS | CHOvil
+  featured      Boolean  @default(false)
+  active        Boolean  @default(true)
+  weight        String?
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  comments      ProductComment[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 /// Comments on products (requires approval)
@@ -81,17 +93,23 @@ model ProductComment {
 
 /// Blog posts (مقالات وب‌سایت)
 model BlogPost {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  excerpt   String?
-  content   String
-  image     String?
-  author    String   @default("تیم ساورز و چویل")
-  tags      String?  /// comma-separated tags
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  titleEn     String?
+  titleAr     String?
+  slug        String   @unique
+  excerpt     String?
+  excerptEn   String?
+  excerptAr   String?
+  content     String
+  contentEn   String?
+  contentAr   String?
+  image       String?
+  author      String   @default("تیم ساورز و چویل")
+  tags        String?  /// comma-separated tags
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 /// Hero slider images

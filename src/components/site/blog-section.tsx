@@ -6,14 +6,16 @@ import type { BlogPost } from "@/lib/types";
 import { formatPersianDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
+import { useTranslation } from "@/contexts/language-context";
 import { Button } from "@/components/ui/button";
 import { Newspaper, ArrowLeft, Calendar, User } from "lucide-react";
 
 export function BlogSection() {
   const { openBlog, setView } = useNav();
+  const { locale } = useTranslation();
   const { data, isLoading } = useQuery({
-    queryKey: ["blog-public"],
-    queryFn: () => api.get<{ items: BlogPost[] }>("/api/blog"),
+    queryKey: ["blog-public", locale],
+    queryFn: () => api.get<{ items: BlogPost[] }>(`/api/blog?lang=${locale}`),
   });
   const posts = (data?.items ?? []).slice(0, 3);
 

@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "ساورز و چویل | خشکبار، ادویه‌جات، قند و شکر",
+    "description": "معرفی محصولات خشکبار، ادویه‌جات، قند و شکر با دو برند اختصاصی ساورز و چویل. کیفیت تضمینی."
+  },
+  "nav": {
+    "home": "خانه",
+    "products": "محصولات",
+    "agents": "نمایندگان",
+    "blog": "بلاگ",
+    "testimonials": "نظرات",
+    "about": "درباره ما",
+    "contact": "تماس"
+  },
+  "hero": {
+    "subtitle": "خشکبار و ادویه‌جات",
+    "cta": "مشاهده محصولات"
+  },
+  "products": {
+    "featured_badge": "منتخب",
+    "featured_title": "محصولات منتخب",
+    "featured_subtitle": "گزیده‌ای از بهترین محصولات ما",
+    "savers_badge": "ساورز",
+    "savers_title": "محصولات برند ساورز",
+    "savers_subtitle": "خشکبار و آجیل تازه و باکیفیت",
+    "chovil_badge": "چویل",
+    "chovil_title": "محصولات برند چویل",
+    "chovil_subtitle": "ادویه‌جات خالص و قند و شکر مرغوب",
+    "view_details": "مشاهده جزئیات",
+    "all_products": "همه محصولات",
+    "search_placeholder": "جستجوی محصول...",
+    "no_products": "محصولی یافت نشد"
+  },
+  "testimonials": {
+    "badge": "رضایت مشتریان",
+    "title": "نظرات مشتریان ما",
+    "subtitle": "آنچه مشتریان ما می‌گویند",
+    "all_reviews": "همه نظرات"
+  },
+  "blog": {
+    "badge": "مجله و بلاگ",
+    "title": "آخرین مقالات",
+    "all_articles": "همه مقالات",
+    "read_more": "ادامه مطلب",
+    "no_articles": "مقاله‌ای موجود نیست"
+  },
+  "about": {
+    "title": "درباره ساورز و چویل",
+    "quality_badge": "کیفیت تضمینی",
+    "quality_sub": "استاندارد ملی سلامت",
+    "stats": {
+      "experience": "سال تجربه",
+      "agents": "نمایندگی فعال",
+      "quality": "کیفیت تضمینی",
+      "customers": "مشتری راضی"
+    }
+  },
+  "contact": {
+    "title": "تماس با ما",
+    "form_name": "نام و نام خانوادگی",
+    "form_email": "ایمیل",
+    "form_phone": "تلفن",
+    "form_subject": "subject",
+    "form_message": "پیام شما",
+    "form_submit": "ارسال پیام",
+    "info_title": "اطلاعات تماس",
+    "address": "آدرس",
+    "phone": "تلفن ثابت",
+    "mobile": "موبایل",
+    "email": "ایمیل",
+    "hours": "ساعات کاری"
+  },
+  "footer": {
+    "description": "فروش و بسته‌بندی خشکبار، ادویه‌جات، قند و شکر با کیفیت تضمینی و ارسال به سراسر کشور.",
+    "quick_links": "دسترسی سریع",
+    "our_brands": "برندهای ما",
+    "savers_desc": "ساورز - خشکبار و آجیل",
+    "chovil_desc": "چویل - ادویه‌جات و قند و شکر",
+    "contact_info": "اطلاعات تماس",
+    "copyright": "تمامی حقوق برای شرکت ساورز و چویل محفوظ است.",
+    "made_with": "ساخته شده با",
+    "for_customers": "برای مشتریان عزیز"
+  },
+  "agents": {
+    "title": "نمایندگان فروش",
+    "subtitle": "لیست نمایندگی‌های فروش ما در سراسر کشور",
+    "phone": "تلفن",
+    "mobile": "موبایل",
+    "no_agents": "نماینده‌ای یافت نشد"
+  },
+  "brands": {
+    "savers": "ساورز",
+    "chovil": "چویل",
+    "both": "هر دو"
+  }
+}

@@ -1,13 +1,17 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { blogPostSchema } from "@/lib/validations";
+import { localizeItem, LOCALIZABLE } from "@/lib/localize";
+import type { Locale } from "@/i18n";
 
 // GET /api/blog/[id] - public single post (by id or slug)
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const { searchParams } = new URL(req.url);
+  const lang = (searchParams.get("lang") || "fa") as Locale;
+
   let post = await db.blogPost.findUnique({ where: { id } });
   if (!post) {
-    // try by slug
     post = await db.blogPost.findUnique({ where: { slug: id } });
   }
   if (!post) return errorResponse("مقاله یافت نشد", 404);
@@ -15,7 +19,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const auth = await requireAdmin();
     if (!auth.ok) return auth.response;
   }
-  return jsonResponse(post);
+
+  const localized = localizeItem(post, LOCALIZABLE.blogPost, lang);
+  return jsonResponse(localized);
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
