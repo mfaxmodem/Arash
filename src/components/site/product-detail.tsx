@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNav } from "@/store/nav-store";
 import { useTranslation } from "@/contexts/language-context";
 import { toast } from "@/lib/toast";
+import { MathCaptcha, HoneypotField } from "@/components/site/math-captcha";
 import {
   ArrowRight,
   Leaf,
@@ -47,7 +48,7 @@ export function ProductDetail() {
 
   const comments = commentsData?.items ?? [];
 
-  const [form, setForm] = useState({ name: "", rating: 5, comment: "" });
+  const [form, setForm] = useState({ name: "", rating: 5, comment: "", website: "", captchaAnswer: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const mutation = useMutation({
@@ -56,7 +57,7 @@ export function ProductDetail() {
     onSuccess: () => {
       toast.success("نظر شما ثبت شد و پس از تایید نمایش داده خواهد شد");
       qc.invalidateQueries({ queryKey: ["product-comments", selectedProductId] });
-      setForm({ name: "", rating: 5, comment: "" });
+      setForm({ name: "", rating: 5, comment: "", website: "", captchaAnswer: "" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -65,6 +66,7 @@ export function ProductDetail() {
     const errs: Record<string, string> = {};
     if (form.name.trim().length < 2) errs.name = "نام را وارد کنید";
     if (form.comment.trim().length < 5) errs.comment = "حداقل ۵ کاراکتر بنویسید";
+    if (!form.captchaAnswer.trim()) errs.captchaAnswer = "پاسخ کپچا الزامی است";
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     mutation.mutate();
@@ -275,6 +277,7 @@ export function ProductDetail() {
           <div className="border-t border-border/50 pt-6">
             <h3 className="font-bold text-foreground mb-4">ثبت نظر شما</h3>
             <div className="space-y-4">
+              <HoneypotField value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
               <div className="space-y-1.5">
                 <Label htmlFor="pc-name">نام و نام خانوادگی *</Label>
                 <Input
@@ -320,6 +323,11 @@ export function ProductDetail() {
                   <p className="text-xs text-destructive">{errors.comment}</p>
                 )}
               </div>
+              <MathCaptcha
+                value={form.captchaAnswer}
+                onChange={(v) => setForm({ ...form, captchaAnswer: v })}
+                error={errors.captchaAnswer}
+              />
               <Button
                 onClick={submit}
                 disabled={mutation.isPending}

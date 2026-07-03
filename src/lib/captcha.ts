@@ -66,3 +66,18 @@ export function validateCaptcha(
 }
 
 export { COOKIE_NAME, COOKIE_MAX_AGE };
+
+/** Extract captcha token from request cookies and validate against body answer */
+export function validateCaptchaFromRequest(
+  req: Request,
+  captchaAnswer: string | undefined
+): { ok: boolean; error?: string } {
+  const cookieHeader = req.headers.get("cookie") || "";
+  const cookies = Object.fromEntries(
+    cookieHeader.split(";").map((c) => {
+      const [k, ...v] = c.trim().split("=");
+      return [k, v.join("=")];
+    })
+  );
+  return validateCaptcha(cookies[COOKIE_NAME], captchaAnswer);
+}

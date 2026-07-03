@@ -19,6 +19,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/toast";
 import { Star, MessageSquareQuote, Quote, User } from "lucide-react";
+import { MathCaptcha, HoneypotField } from "@/components/site/math-captcha";
 
 export function TestimonialsSection() {
   const { data, isLoading } = useQuery({
@@ -98,7 +99,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 
 function SubmitTestimonial() {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", city: "", rating: 5, comment: "" });
+  const [form, setForm] = useState({ name: "", city: "", rating: 5, comment: "", website: "", captchaAnswer: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const qc = useQueryClient();
 
@@ -107,7 +108,7 @@ function SubmitTestimonial() {
     onSuccess: () => {
       toast.success("نظر شما ثبت شد و پس از تایید نمایش داده خواهد شد");
       qc.invalidateQueries({ queryKey: ["testimonials-public"] });
-      setForm({ name: "", city: "", rating: 5, comment: "" });
+      setForm({ name: "", city: "", rating: 5, comment: "", website: "", captchaAnswer: "" });
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
@@ -117,6 +118,7 @@ function SubmitTestimonial() {
     const errs: Record<string, string> = {};
     if (form.name.trim().length < 2) errs.name = "نام را وارد کنید";
     if (form.comment.trim().length < 5) errs.comment = "حداقل ۵ کاراکتر بنویسید";
+    if (!form.captchaAnswer.trim()) errs.captchaAnswer = "پاسخ کپچا الزامی است";
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     mutation.mutate();
@@ -135,6 +137,7 @@ function SubmitTestimonial() {
           <DialogTitle>ثبت نظر</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 pt-2">
+          <HoneypotField value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
           <div className="space-y-1.5">
             <Label htmlFor="t-name">نام و نام خانوادگی *</Label>
             <Input
@@ -187,6 +190,11 @@ function SubmitTestimonial() {
             />
             {errors.comment && <p className="text-xs text-destructive">{errors.comment}</p>}
           </div>
+          <MathCaptcha
+            value={form.captchaAnswer}
+            onChange={(v) => setForm({ ...form, captchaAnswer: v })}
+            error={errors.captchaAnswer}
+          />
           <Button
             onClick={submit}
             disabled={mutation.isPending}

@@ -105,12 +105,16 @@ export const testimonialSchema = z.object({
   city: safeString(100).optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5).default(5),
   comment: safeString(1000).min(5, "حداقل ۵ کاراکتر"),
+  website: z.string().max(0, "bot detected").optional().or(z.literal("")),
+  captchaAnswer: z.string().min(1, "پاسخ کپچا الزامی است"),
 });
 
 export const productCommentSchema = z.object({
   name: safeString(100).min(2, "نام الزامی است"),
   rating: z.number().int().min(1).max(5).default(5),
   comment: safeString(1000).min(5, "حداقل ۵ کاراکتر"),
+  website: z.string().max(0, "bot detected").optional().or(z.literal("")),
+  captchaAnswer: z.string().min(1, "پاسخ کپچا الزامی است"),
 });
 
 export const blogPostSchema = z.object({

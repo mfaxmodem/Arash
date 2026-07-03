@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { productCommentSchema } from "@/lib/validations";
+import { validateCaptchaFromRequest } from "@/lib/captcha";
 
 // GET /api/products/[id]/comments - approved comments for a product
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -22,6 +23,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const body = await validateBody(req, productCommentSchema);
   if (!body.ok) return body.response;
+
+  // Honeypot check
+  if ((body.data as any).website && (body.data as any).website.length > 0) {
+    return jsonResponse({ success: true, message: "نظر شما ثبت شد." }, 201);
+  }
+
+  // Captcha validation
+  const captchaResult = validateCaptchaFromRequest(req, (body.data as any).captchaAnswer);
+  if (!captchaResult.ok) return errorResponse(captchaResult.error!, 400);
 
   const c = await db.productComment.create({
     data: {

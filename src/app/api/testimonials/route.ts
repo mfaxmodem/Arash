@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { requireAdmin, validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { testimonialSchema } from "@/lib/validations";
+import { validateCaptchaFromRequest } from "@/lib/captcha";
 
 // GET /api/testimonials - public approved testimonials (or all for admin with ?all=true)
 export async function GET(req: Request) {
@@ -27,6 +28,15 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await validateBody(req, testimonialSchema);
   if (!body.ok) return body.response;
+
+  // Honeypot check
+  if ((body.data as any).website && (body.data as any).website.length > 0) {
+    return jsonResponse({ success: true, message: "نظر شما ثبت شد." }, 201);
+  }
+
+  // Captcha validation
+  const captchaResult = validateCaptchaFromRequest(req, (body.data as any).captchaAnswer);
+  if (!captchaResult.ok) return errorResponse(captchaResult.error!, 400);
 
   const t = await db.testimonial.create({
     data: { ...body.data, status: "PENDING", active: false },
