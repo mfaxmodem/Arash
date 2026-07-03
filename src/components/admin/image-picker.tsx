@@ -1,10 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Upload, Link2, Image as ImageIcon } from "lucide-react";
+import { Upload, Link2, Image as ImageIcon, FolderOpen } from "lucide-react";
+
+interface MediaFile {
+  name: string;
+  url: string;
+  size: number;
+  category: string;
+  uploaded: number;
+}
 
 const PRESET_IMAGES = [
   { url: "/images/pistachio.png", label: "پسته" },
@@ -25,6 +35,8 @@ const PRESET_IMAGES = [
   { url: "/images/brand-chovil.png", label: "لوگو چویل" },
 ];
 
+type TabMode = "gallery" | "preset" | "url";
+
 export function ImagePicker({
   value,
   onChange,
@@ -34,12 +46,31 @@ export function ImagePicker({
   onChange: (v: string) => void;
   label?: string;
 }) {
-  const [mode, setMode] = useState<"preset" | "url">("preset");
+  const [mode, setMode] = useState<TabMode>("gallery");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["gallery-files"],
+    queryFn: () => api.get<{ files: MediaFile[] }>("/api/upload"),
+    staleTime: 30_000,
+  });
+
+  const galleryImages = (data?.files ?? []).filter((f) => f.category === "image");
 
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
+      {label && <Label>{label}</Label>}
       <div className="flex items-center gap-2 mb-2">
+        <button
+          type="button"
+          onClick={() => setMode("gallery")}
+          className={cn(
+            "px-3 py-1.5 rounded-lg text-xs font-medium gap-1.5 inline-flex items-center",
+            mode === "gallery" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground/70"
+          )}
+        >
+          <FolderOpen className="w-3.5 h-3.5" />
+          گالری سایت
+        </button>
         <button
           type="button"
           onClick={() => setMode("preset")}
@@ -49,7 +80,7 @@ export function ImagePicker({
           )}
         >
           <ImageIcon className="w-3.5 h-3.5" />
-          انتخاب از گالری
+          تصاویر پیش‌فرض
         </button>
         <button
           type="button"
@@ -64,7 +95,38 @@ export function ImagePicker({
         </button>
       </div>
 
-      {mode === "preset" ? (
+      {mode === "gallery" ? (
+        isLoading ? (
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-48 overflow-y-auto p-1 custom-scroll">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
+            ))}
+          </div>
+        ) : galleryImages.length === 0 ? (
+          <div className="text-center py-6 text-muted-foreground text-xs bg-muted/30 rounded-lg">
+            تصویری در گالری آپلود نشده است. ابتدا از بخش «گالری رسانه» تصویر آپلود کنید.
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-48 overflow-y-auto p-1 custom-scroll">
+            {galleryImages.map((img) => (
+              <button
+                key={img.url}
+                type="button"
+                onClick={() => onChange(img.url)}
+                className={cn(
+                  "aspect-square rounded-lg overflow-hidden border-2 transition-all",
+                  value === img.url
+                    ? "border-primary ring-2 ring-primary/20"
+                    : "border-transparent hover:border-primary/40"
+                )}
+                title={img.name}
+              >
+                <img src={img.url} alt={img.name} className="w-full h-full object-cover" loading="lazy" />
+              </button>
+            ))}
+          </div>
+        )
+      ) : mode === "preset" ? (
         <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-48 overflow-y-auto p-1 custom-scroll">
           {PRESET_IMAGES.map((img) => (
             <button
@@ -87,7 +149,7 @@ export function ImagePicker({
         <Input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="/images/... یا https://..."
+          placeholder="/uploads/images/... یا /images/... یا https://..."
           dir="ltr"
         />
       )}

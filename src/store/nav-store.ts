@@ -26,6 +26,7 @@ interface NavState {
     | "content"
     | "messages"
     | "password"
+    | "gallery"
     | null;
   // context for detail views
   selectedProductId: string | null;

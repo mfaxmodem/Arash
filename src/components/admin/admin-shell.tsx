@@ -19,6 +19,7 @@ import {
   Newspaper,
   MessageSquare,
   ShieldCheck,
+  Film,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
@@ -32,6 +33,7 @@ import { AdminProductComments } from "@/components/admin/admin-product-comments"
 import { AdminContent } from "@/components/admin/admin-content";
 import { AdminMessages } from "@/components/admin/admin-messages";
 import { AdminPassword } from "@/components/admin/admin-password";
+import { AdminGallery } from "@/components/admin/admin-gallery";
 import { toast } from "@/lib/toast";
 
 const TABS = [
@@ -46,6 +48,7 @@ const TABS = [
   { id: "content", label: "محتوای صفحات", icon: FileText },
   { id: "messages", label: "پیام‌ها", icon: Mail },
   { id: "password", label: "تغییر رمز عبور", icon: ShieldCheck },
+  { id: "gallery", label: "گالری رسانه", icon: Film },
 ] as const;
 
 export function AdminShell({ user }: { user: { email: string; name: string; role: string } }) {
@@ -158,6 +161,7 @@ export function AdminShell({ user }: { user: { email: string; name: string; role
           <div className={cn(adminTab === "content" ? "block" : "hidden")}><AdminContent /></div>
           <div className={cn(adminTab === "messages" ? "block" : "hidden")}><AdminMessages /></div>
           <div className={cn(adminTab === "password" ? "block" : "hidden")}><AdminPassword /></div>
+          <div className={cn(adminTab === "gallery" ? "block" : "hidden")}><AdminGallery /></div>
         </div>
       </div>
     </div>
