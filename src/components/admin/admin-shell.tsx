@@ -41,14 +41,14 @@ const TABS = [
   { id: "products", label: "محصولات", icon: Package },
   { id: "categories", label: "دسته‌بندی‌ها", icon: FolderTree },
   { id: "sliders", label: "اسلایدر", icon: Images },
-  { id: "agents", label: "نمایندگان", icon: Store },
-  { id: "testimonials", label: "نظرات خریداران", icon: MessageSquareQuote },
-  { id: "productComments", label: "نظرات محصولات", icon: MessageSquare },
   { id: "blog", label: "بلاگ", icon: Newspaper },
   { id: "content", label: "محتوای صفحات", icon: FileText },
+  { id: "agents", label: "نمایندگان", icon: Store },
+  { id: "gallery", label: "گالری رسانه", icon: Film },
+  { id: "testimonials", label: "نظرات خریداران", icon: MessageSquareQuote },
+  { id: "productComments", label: "نظرات محصولات", icon: MessageSquare },
   { id: "messages", label: "پیام‌ها", icon: Mail },
   { id: "password", label: "تغییر رمز عبور", icon: ShieldCheck },
-  { id: "gallery", label: "گالری رسانه", icon: Film },
 ] as const;
 
 export function AdminShell({ user }: { user: { email: string; name: string; role: string } }) {
