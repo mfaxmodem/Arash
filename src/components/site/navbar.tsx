@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Menu, Leaf, Sparkles } from "lucide-react";
+import { useBrandIcons } from "@/hooks/use-brand-icons";
 
 const NAV_ITEMS: { label: string; view: View }[] = [
   { label: "خانه", view: "home" },
@@ -19,6 +20,7 @@ const NAV_ITEMS: { label: string; view: View }[] = [
 
 export function Navbar() {
   const { view, setView } = useNav();
+  const { saversIcon, chovilIcon } = useBrandIcons();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -52,11 +54,11 @@ export function Navbar() {
             aria-label="صفحه اصلی"
           >
             <div className="flex items-center gap-1">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-savers text-savers-foreground shadow-md group-hover:scale-105 transition-transform">
-                <Leaf className="w-5 h-5" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-savers text-savers-foreground shadow-md group-hover:scale-105 transition-transform overflow-hidden">
+                {saversIcon ? <img src={saversIcon} alt="ساورز" className="w-full h-full object-cover" /> : <Leaf className="w-5 h-5" />}
               </div>
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-chovil text-chovil-foreground shadow-md group-hover:scale-105 transition-transform -mr-3">
-                <Sparkles className="w-5 h-5" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-chovil text-chovil-foreground shadow-md group-hover:scale-105 transition-transform -mr-3 overflow-hidden">
+                {chovilIcon ? <img src={chovilIcon} alt="چویل" className="w-full h-full object-cover" /> : <Sparkles className="w-5 h-5" />}
               </div>
             </div>
             <div className="flex flex-col items-start leading-tight">

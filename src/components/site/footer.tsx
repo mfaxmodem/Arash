@@ -2,6 +2,7 @@
 
 import { useNav, type View } from "@/store/nav-store";
 import { Leaf, Sparkles, Phone, Mail, MapPin, Instagram, Send } from "lucide-react";
+import { useBrandIcons } from "@/hooks/use-brand-icons";
 
 const NAV_ITEMS: { label: string; view: View }[] = [
   { label: "خانه", view: "home" },
@@ -15,6 +16,7 @@ const NAV_ITEMS: { label: string; view: View }[] = [
 
 export function Footer() {
   const { setView } = useNav();
+  const { saversIcon, chovilIcon } = useBrandIcons();
   const year = new Intl.DateTimeFormat("fa-IR", { year: "numeric" }).format(new Date());
 
   return (
@@ -24,11 +26,11 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-savers text-savers-foreground">
-                <Leaf className="w-5 h-5" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-savers text-savers-foreground overflow-hidden">
+                {saversIcon ? <img src={saversIcon} alt="ساورز" className="w-full h-full object-cover" /> : <Leaf className="w-5 h-5" />}
               </div>
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-chovil text-chovil-foreground -mr-3">
-                <Sparkles className="w-5 h-5" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-chovil text-chovil-foreground -mr-3 overflow-hidden">
+                {chovilIcon ? <img src={chovilIcon} alt="چویل" className="w-full h-full object-cover" /> : <Sparkles className="w-5 h-5" />}
               </div>
             </div>
             <h3 className="font-extrabold text-lg mb-2">
@@ -61,11 +63,11 @@ export function Footer() {
             <h4 className="font-bold mb-4">برندهای ما</h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm">
-                <Leaf className="w-4 h-4 text-savers" />
+                {saversIcon ? <img src={saversIcon} alt="ساورز" className="w-4 h-4 rounded object-cover" /> : <Leaf className="w-4 h-4 text-savers" />}
                 <span className="text-background/80">ساورز - خشکبار و آجیل</span>
               </li>
               <li className="flex items-center gap-2 text-sm">
-                <Sparkles className="w-4 h-4 text-chovil" />
+                {chovilIcon ? <img src={chovilIcon} alt="چویل" className="w-4 h-4 rounded object-cover" /> : <Sparkles className="w-4 h-4 text-chovil" />}
                 <span className="text-background/80">چویل - ادویه‌جات و قند و شکر</span>
               </li>
             </ul>

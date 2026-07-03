@@ -8,14 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ImagePicker } from "@/components/admin/image-picker";
 import { toast } from "@/lib/toast";
-import { FileText, Save, MapPin, Info, Phone } from "lucide-react";
+import { FileText, Save, MapPin, Info, Phone, Palette } from "lucide-react";
 
 interface ContentField {
   key: string;
   label: string;
-  type: "text" | "textarea";
-  group: "about" | "contact" | "map";
+  type: "text" | "textarea" | "image";
+  group: "about" | "contact" | "map" | "brands";
   placeholder?: string;
 }
 
@@ -31,12 +32,15 @@ const FIELDS: ContentField[] = [
   { key: "map_lng", label: "طول جغرافیایی (Longitude)", type: "text", group: "map", placeholder: "51.3347" },
   { key: "map_zoom", label: "زوم نقشه", type: "text", group: "map", placeholder: "14" },
   { key: "map_address", label: "آدرس نمایشی روی نقشه", type: "text", group: "map" },
+  { key: "brand_savers_icon", label: "آیکون برند ساورز", type: "image", group: "brands" },
+  { key: "brand_chovil_icon", label: "آیکون برند چویل", type: "image", group: "brands" },
 ];
 
 const GROUPS = [
   { id: "about", label: "بخش درباره ما", icon: Info },
   { id: "contact", label: "اطلاعات تماس", icon: Phone },
   { id: "map", label: "موقعیت مکانی (نقشه)", icon: MapPin },
+  { id: "brands", label: "آیکون برندها", icon: Palette },
 ] as const;
 
 export function AdminContent() {
@@ -98,7 +102,13 @@ export function AdminContent() {
             {FIELDS.filter((f) => f.group === group.id).map((field) => (
               <div key={field.key} className="space-y-1.5">
                 <Label>{field.label}</Label>
-                {field.type === "text" ? (
+                {field.type === "image" ? (
+                  <ImagePicker
+                    value={getValue(field.key)}
+                    onChange={(v) => setValue(field.key, v)}
+                    label=""
+                  />
+                ) : field.type === "text" ? (
                   <Input
                     value={getValue(field.key)}
                     onChange={(e) => setValue(field.key, e.target.value)}
