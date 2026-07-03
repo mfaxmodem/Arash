@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useNav, type View } from "@/store/nav-store";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,22 +10,21 @@ import { Menu, Leaf, Sparkles } from "lucide-react";
 import { useBrandIcons } from "@/hooks/use-brand-icons";
 import { useTranslation } from "@/contexts/language-context";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
-
-const NAV_ITEMS: { label: string; view: View }[] = [
-  { label: "خانه", view: "home" },
-  { label: "محصولات", view: "products" },
-  { label: "نمایندگان", view: "agents" },
-  { label: "بلاگ", view: "blog" },
-  { label: "نظرات", view: "testimonials" },
-  { label: "درباره ما", view: "about" },
-  { label: "تماس", view: "contact" },
-];
+import { LOCALES } from "@/i18n";
 
 export function Navbar() {
   const { view, setView } = useNav();
   const { saversIcon, chovilIcon } = useBrandIcons();
   const { t } = useTranslation();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Detect home page: /fa, /en, /ar (exactly, no sub-path)
+  const isHome = LOCALES.some((l) => pathname === `/${l}`) || pathname === "/";
+
+  // On inner pages, always use "scrolled" style regardless of scroll position
+  const isDark = isHome && !scrolled;
 
   const NAV_ITEMS: { label: string; view: View }[] = [
     { label: t.nav.home, view: "home" },
@@ -35,7 +35,6 @@ export function Navbar() {
     { label: t.nav.about, view: "about" },
     { label: t.nav.contact, view: "contact" },
   ];
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -53,9 +52,9 @@ export function Navbar() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-background/90 backdrop-blur-md shadow-md border-b border-border/50"
-          : "bg-transparent"
+        isDark
+          ? "bg-transparent"
+          : "bg-white/90 backdrop-blur-md shadow-sm border-b border-border/50"
       )}
     >
       <div className="container mx-auto px-4">
@@ -75,13 +74,13 @@ export function Navbar() {
               </div>
             </div>
             <div className="flex flex-col items-start leading-tight">
-              <span className="font-extrabold text-lg text-foreground">
+              <span className={cn("font-extrabold text-lg", isDark ? "text-white" : "text-foreground")}>
                 ساورز <span className="text-chovil">و</span> چویل
               </span>
               <span
                 className={cn(
                   "text-[10px] tracking-wide",
-                  scrolled ? "text-muted-foreground" : "text-foreground/70"
+                  isDark ? "text-white/70" : "text-muted-foreground"
                 )}
               >
                 خشکبار و ادویه‌جات
@@ -98,12 +97,12 @@ export function Navbar() {
                 className={cn(
                   "px-3.5 py-2 rounded-lg text-sm font-medium transition-colors relative",
                   view === item.view || (item.view === "blog" && view === "blogDetail")
-                    ? scrolled
-                      ? "bg-primary/10 text-primary"
-                      : "bg-white/20 text-white"
-                    : scrolled
-                      ? "text-foreground/70 hover:text-primary hover:bg-primary/5"
-                      : "text-white/90 hover:text-white hover:bg-white/10"
+                    ? isDark
+                      ? "bg-white/20 text-white"
+                      : "bg-primary/10 text-primary"
+                    : isDark
+                      ? "text-white/90 hover:text-white hover:bg-white/10"
+                      : "text-foreground/70 hover:text-primary hover:bg-primary/5"
                 )}
               >
                 {item.label}
@@ -113,13 +112,13 @@ export function Navbar() {
 
           {/* Language switcher + Mobile menu */}
           <div className="flex items-center gap-2">
-            <LanguageSwitcher scrolled={scrolled} />
+            <LanguageSwitcher scrolled={!isDark} />
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button
-                  variant={scrolled ? "outline" : "secondary"}
+                  variant={!isDark ? "outline" : "secondary"}
                   size="icon"
-                  className={cn("lg:hidden", !scrolled && "bg-white/90")}
+                  className={cn("lg:hidden", isDark && "bg-white/90")}
                   aria-label="منو"
                 >
                   <Menu className="w-5 h-5" />

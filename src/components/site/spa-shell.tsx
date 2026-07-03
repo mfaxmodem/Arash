@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useNav } from "@/store/nav-store";
-import { Navbar } from "@/components/site/navbar";
 import { HeroSlider } from "@/components/site/hero-slider";
 import { FeaturedProducts } from "@/components/site/featured-products";
 import { TestimonialPreview } from "@/components/site/testimonial-preview";
@@ -11,7 +10,6 @@ import { AgentsSection } from "@/components/site/agents-section";
 import { TestimonialsSection } from "@/components/site/testimonials-section";
 import { AboutSection } from "@/components/site/about-section";
 import { ContactSection } from "@/components/site/contact-section";
-import { Footer } from "@/components/site/footer";
 import { AdminPanel } from "@/components/admin/admin-panel";
 import { AboutPreview } from "@/components/site/about-preview";
 import { BlogSection } from "@/components/site/blog-section";
@@ -36,32 +34,26 @@ export function SpaShell() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-
-      <main className="flex-1">
-        {view === "home" && (
-          <>
-            <HeroSlider />
-            <FeaturedProducts />
-            <TestimonialPreview />
-            <BlogSection />
-            <AboutPreview />
-          </>
-        )}
-        {view === "products" && <ProductsSection />}
-        {view === "productDetail" && <ProductDetail />}
-        {view === "agents" && <AgentsSection />}
-        {view === "blog" && <BlogList />}
-        {view === "blogDetail" && <BlogDetail />}
-        {view === "testimonials" && <TestimonialsSection />}
-        {view === "about" && <AboutSection />}
-        {view === "contact" && <ContactSection />}
-      </main>
-
-      <Footer />
+    <>
+      {view === "home" && (
+        <>
+          <HeroSlider />
+          <FeaturedProducts />
+          <TestimonialPreview />
+          <BlogSection />
+          <AboutPreview />
+        </>
+      )}
+      {view === "products" && <ProductsSection />}
+      {view === "productDetail" && <ProductDetail />}
+      {view === "agents" && <AgentsSection />}
+      {view === "blog" && <BlogList />}
+      {view === "blogDetail" && <BlogDetail />}
+      {view === "testimonials" && <TestimonialsSection />}
+      {view === "about" && <AboutSection />}
+      {view === "contact" && <ContactSection />}
 
       {adminMode && <AdminPanel />}
-    </div>
+    </>
   );
 }
