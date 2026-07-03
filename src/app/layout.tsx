@@ -3,11 +3,11 @@ import { HtmlLangSync } from "@/components/site/html-lang-sync";
 import { ThemeProvider } from "@/components/theme-provider";
 
 // This script runs before React hydrates — no hydration mismatch
+// Default is ALWAYS light. Dark only if user explicitly chose it.
 const themeScript = `
   (function() {
     try {
-      var t = localStorage.getItem('theme');
-      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
       }
     } catch(e) {}

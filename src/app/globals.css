@@ -52,92 +52,112 @@
 :root {
   --radius: 0.875rem;
 
-  /* Warm food-industry palette: amber/spice orange primary, organic green accent */
-  --background: oklch(0.99 0.008 80);          /* warm cream */
-  --foreground: oklch(0.24 0.02 50);           /* deep warm brown-black */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.02 50);
+  /* === "Nature & Authenticity" Color Scheme === */
+
+  /* Backgrounds (60%) */
+  --background: oklch(0.975 0.005 85);          /* #F9F7F2 Warm Bone Cream */
+  --foreground: oklch(0.28 0.02 50);            /* #2B2118 Deep warm black-brown */
+  --card: oklch(1 0 0);                         /* #FFFFFF Pure white for cards */
+  --card-foreground: oklch(0.28 0.02 50);       /* #2B2118 */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.02 50);
+  --popover-foreground: oklch(0.28 0.02 50);
 
-  /* Primary: burnt spice orange (appetizing) */
-  --primary: oklch(0.62 0.17 45);
-  --primary-foreground: oklch(0.99 0.01 80);
+  /* Primary Brand (30%): Cinnamon Brown / Clay */
+  --primary: oklch(0.42 0.06 45);               /* #5C4033 */
+  --primary-foreground: oklch(0.975 0.005 85);  /* #F9F7F2 cream on brown */
 
-  /* Secondary: soft amber */
-  --secondary: oklch(0.95 0.03 75);
-  --secondary-foreground: oklch(0.35 0.04 50);
+  /* Secondary: soft warm beige */
+  --secondary: oklch(0.95 0.01 75);             /* warm light beige */
+  --secondary-foreground: oklch(0.42 0.06 45);  /* #5C4033 */
 
-  --muted: oklch(0.96 0.015 75);
-  --muted-foreground: oklch(0.5 0.02 55);
+  --muted: oklch(0.94 0.008 75);                /* subtle warm muted */
+  --muted-foreground: oklch(0.52 0.02 55);      /* #6B5D4F secondary text */
 
-  /* Accent: organic green for natural/dried-fruit feel */
-  --accent: oklch(0.92 0.05 130);
-  --accent-foreground: oklch(0.3 0.05 140);
+  /* Accent: Olive Green for organic/natural feel */
+  --accent: oklch(0.52 0.08 125);               /* #606C38 Olive Green */
+  --accent-foreground: oklch(0.975 0.005 85);   /* cream on green */
 
-  --destructive: oklch(0.58 0.22 25);
-  --border: oklch(0.9 0.02 70);
-  --input: oklch(0.92 0.015 70);
-  --ring: oklch(0.62 0.17 45);
+  --destructive: oklch(0.58 0.22 25);           /* keep existing red */
+  --border: oklch(0.92 0.01 70);                /* #E8DFD0 warm beige border */
+  --input: oklch(0.92 0.01 70);                 /* same as border */
+  --ring: oklch(0.68 0.16 55);                  /* #E27D22 Saffron Orange ring */
 
-  --chart-1: oklch(0.62 0.17 45);
-  --chart-2: oklch(0.6 0.14 140);
-  --chart-3: oklch(0.7 0.15 70);
-  --chart-4: oklch(0.55 0.12 30);
-  --chart-5: oklch(0.65 0.1 90);
+  --chart-1: oklch(0.68 0.16 55);               /* Saffron Orange */
+  --chart-2: oklch(0.52 0.08 125);              /* Olive Green */
+  --chart-3: oklch(0.78 0.12 85);               /* Matte Gold */
+  --chart-4: oklch(0.42 0.06 45);               /* Cinnamon Brown */
+  --chart-5: oklch(0.62 0.14 50);               /* Warm amber */
 
-  --sidebar: oklch(0.985 0.008 80);
-  --sidebar-foreground: oklch(0.24 0.02 50);
-  --sidebar-primary: oklch(0.62 0.17 45);
-  --sidebar-primary-foreground: oklch(0.99 0.01 80);
-  --sidebar-accent: oklch(0.95 0.03 75);
-  --sidebar-accent-foreground: oklch(0.35 0.04 50);
-  --sidebar-border: oklch(0.9 0.02 70);
-  --sidebar-ring: oklch(0.62 0.17 45);
+  --sidebar: oklch(0.975 0.005 85);
+  --sidebar-foreground: oklch(0.28 0.02 50);
+  --sidebar-primary: oklch(0.68 0.16 55);
+  --sidebar-primary-foreground: oklch(0.975 0.005 85);
+  --sidebar-accent: oklch(0.95 0.01 75);
+  --sidebar-accent-foreground: oklch(0.42 0.06 45);
+  --sidebar-border: oklch(0.92 0.01 70);
+  --sidebar-ring: oklch(0.68 0.16 55);
 
   /* Brand colors */
-  --savers: oklch(0.55 0.14 150);          /* deep organic green - Savers */
-  --savers-foreground: oklch(0.99 0.01 80);
-  --chovil: oklch(0.6 0.16 45);            /* warm spice orange - Chovil */
-  --chovil-foreground: oklch(0.99 0.01 80);
+  --savers: oklch(0.52 0.08 125);              /* #606C38 Olive Green - Savers */
+  --savers-foreground: oklch(0.975 0.005 85);
+  --chovil: oklch(0.68 0.16 55);               /* #E27D22 Saffron Orange - Chovil */
+  --chovil-foreground: oklch(0.975 0.005 85);
 }
 
 .dark {
-  --background: oklch(0.18 0.015 50);
-  --foreground: oklch(0.96 0.01 80);
-  --card: oklch(0.22 0.02 50);
-  --card-foreground: oklch(0.96 0.01 80);
-  --popover: oklch(0.22 0.02 50);
-  --popover-foreground: oklch(0.96 0.01 80);
-  --primary: oklch(0.68 0.17 45);
-  --primary-foreground: oklch(0.18 0.015 50);
-  --secondary: oklch(0.28 0.02 50);
-  --secondary-foreground: oklch(0.96 0.01 80);
-  --muted: oklch(0.28 0.015 50);
-  --muted-foreground: oklch(0.7 0.015 75);
-  --accent: oklch(0.32 0.04 140);
-  --accent-foreground: oklch(0.92 0.04 130);
+  /* Backgrounds — 10-15% lightness gap between bg and card */
+  --background: oklch(0.15 0.02 50);           /* #1a1410 deep warm dark brown */
+  --card: oklch(0.20 0.02 50);                 /* #241c16 slightly lighter */
+  --popover: oklch(0.20 0.02 50);
+
+  /* Text — warm off-white/cream, NOT pure white */
+  --foreground: oklch(0.92 0.01 85);           /* #e8dfd0 warm cream */
+  --card-foreground: oklch(0.92 0.01 85);
+  --popover-foreground: oklch(0.92 0.01 85);
+  --muted-foreground: oklch(0.70 0.02 55);     /* #a89b8c light warm gray */
+
+  /* Primary: Cinnamon Brown — lightened for dark bg visibility */
+  --primary: oklch(0.55 0.08 45);              /* #7a5a4a lighter brown */
+  --primary-foreground: oklch(0.92 0.01 85);   /* cream on brown */
+
+  /* Secondary */
+  --secondary: oklch(0.25 0.02 50);
+  --secondary-foreground: oklch(0.92 0.01 85);
+  --muted: oklch(0.22 0.015 50);
+
+  /* Accent: Olive Green — lightened */
+  --accent: oklch(0.65 0.10 125);              /* #7a8a4a */
+  --accent-foreground: oklch(0.92 0.01 85);
+
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.17 45);
-  --chart-1: oklch(0.68 0.17 45);
-  --chart-2: oklch(0.65 0.14 140);
-  --chart-3: oklch(0.72 0.15 70);
-  --chart-4: oklch(0.6 0.12 30);
-  --chart-5: oklch(0.68 0.1 90);
-  --sidebar: oklch(0.22 0.02 50);
-  --sidebar-foreground: oklch(0.96 0.01 80);
-  --sidebar-primary: oklch(0.68 0.17 45);
-  --sidebar-primary-foreground: oklch(0.18 0.015 50);
-  --sidebar-accent: oklch(0.28 0.02 50);
-  --sidebar-accent-foreground: oklch(0.96 0.01 80);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.68 0.17 45);
-  --savers: oklch(0.62 0.14 150);
-  --savers-foreground: oklch(0.99 0.01 80);
-  --chovil: oklch(0.68 0.16 45);
-  --chovil-foreground: oklch(0.99 0.01 80);
+
+  /* Borders — visible but subtle */
+  --border: oklch(0.30 0.02 50);               /* #3a2e26 */
+  --input: oklch(0.30 0.02 50);
+  --ring: oklch(0.72 0.18 55);                 /* #f09030 bright saffron */
+
+  /* Charts */
+  --chart-1: oklch(0.72 0.18 55);
+  --chart-2: oklch(0.65 0.10 125);
+  --chart-3: oklch(0.78 0.12 85);
+  --chart-4: oklch(0.55 0.08 45);
+  --chart-5: oklch(0.68 0.14 50);
+
+  /* Sidebar */
+  --sidebar: oklch(0.18 0.02 50);
+  --sidebar-foreground: oklch(0.92 0.01 85);
+  --sidebar-primary: oklch(0.72 0.18 55);
+  --sidebar-primary-foreground: oklch(0.15 0.02 50);
+  --sidebar-accent: oklch(0.25 0.02 50);
+  --sidebar-accent-foreground: oklch(0.92 0.01 85);
+  --sidebar-border: oklch(0.30 0.02 50);
+  --sidebar-ring: oklch(0.72 0.18 55);
+
+  /* Brand */
+  --savers: oklch(0.62 0.10 125);              /* lightened olive */
+  --savers-foreground: oklch(0.92 0.01 85);
+  --chovil: oklch(0.72 0.18 55);               /* bright saffron */
+  --chovil-foreground: oklch(0.15 0.02 50);
 }
 
 @layer base {
@@ -158,11 +178,11 @@
     background: var(--muted);
   }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.7 0.1 60);
+    background: oklch(0.68 0.16 55);
     border-radius: 6px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: oklch(0.58 0.16 55);
   }
 }
 
@@ -176,25 +196,25 @@
   /* Custom scrollbar for scrollable lists */
   .custom-scroll {
     scrollbar-width: thin;
-    scrollbar-color: oklch(0.7 0.1 60) transparent;
+    scrollbar-color: oklch(0.68 0.16 55) transparent;
   }
   .custom-scroll::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   .custom-scroll::-webkit-scrollbar-thumb {
-    background: oklch(0.7 0.1 60);
+    background: oklch(0.68 0.16 55);
     border-radius: 4px;
   }
-  /* Spice gradient backgrounds */
+  /* Warm gradient backgrounds */
   .bg-spice-gradient {
-    background: linear-gradient(135deg, oklch(0.95 0.05 70), oklch(0.92 0.06 50));
+    background: linear-gradient(135deg, oklch(0.97 0.008 80), oklch(0.95 0.01 70));
   }
   .bg-hero-overlay {
-    background: linear-gradient(270deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.05) 100%);
+    background: linear-gradient(270deg, rgba(43,33,24,0.75) 0%, rgba(43,33,24,0.4) 50%, rgba(43,33,24,0.05) 100%);
   }
   .bg-hero-overlay-rtl {
-    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.05) 100%);
+    background: linear-gradient(90deg, rgba(43,33,24,0.75) 0%, rgba(43,33,24,0.4) 50%, rgba(43,33,24,0.05) 100%);
   }
   /* Brand badge colors */
   .brand-savers {
