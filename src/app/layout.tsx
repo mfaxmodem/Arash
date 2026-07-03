@@ -1,5 +1,18 @@
 import "./globals.css";
 import { HtmlLangSync } from "@/components/site/html-lang-sync";
+import { ThemeProvider } from "@/components/theme-provider";
+
+// This script runs before React hydrates — no hydration mismatch
+const themeScript = `
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  })()
+`;
 
 export default function RootLayout({
   children,
@@ -9,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link
           rel="preconnect"
           href="https://cdn.jsdelivr.net"
@@ -20,8 +34,10 @@ export default function RootLayout({
         />
       </head>
       <body className="font-vazir antialiased bg-background text-foreground" suppressHydrationWarning>
-        <HtmlLangSync />
-        {children}
+        <ThemeProvider>
+          <HtmlLangSync />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

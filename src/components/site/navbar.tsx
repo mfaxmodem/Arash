@@ -6,9 +6,10 @@ import { useNav, type View } from "@/store/nav-store";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { Menu, Leaf, Sparkles } from "lucide-react";
+import { Menu, Leaf, Sparkles, Moon, Sun } from "lucide-react";
 import { useBrandIcons } from "@/hooks/use-brand-icons";
 import { useTranslation } from "@/contexts/language-context";
+import { useTheme } from "@/components/theme-provider";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { LOCALES } from "@/i18n";
 
@@ -16,6 +17,7 @@ export function Navbar() {
   const { view, setView } = useNav();
   const { saversIcon, chovilIcon } = useBrandIcons();
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -110,8 +112,20 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Language switcher + Mobile menu */}
+          {/* Language switcher + Theme toggle + Mobile menu */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className={cn(
+                "flex items-center justify-center w-9 h-9 rounded-md transition-colors",
+                isDark
+                  ? "bg-white/10 text-white hover:bg-white/20"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              )}
+              aria-label="تغییر تم"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <LanguageSwitcher scrolled={!isDark} />
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
