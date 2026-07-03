@@ -149,8 +149,10 @@ export const contactSchema = z.object({
     .refine((v) => !v || /^[\d\s+()-]+$/.test(v), "تلفن نامعتبر است"),
   subject: safeString(200).min(2, "موضوع الزامی است"),
   message: safeString(2000).min(10, "حداقل ۱۰ کاراکتر"),
-  // CSRF honeypot field - must be empty
+  // Honeypot field — must be empty; bots fill it
   website: z.string().max(0, "bot detected").optional().or(z.literal("")),
+  // Math captcha answer
+  captchaAnswer: z.string().min(1, "پاسخ کپچا الزامی است"),
 });
 
 export const changePasswordSchema = z.object({

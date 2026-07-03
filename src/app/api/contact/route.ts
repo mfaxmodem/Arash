@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { validateBody, jsonResponse, errorResponse } from "@/lib/session";
 import { contactSchema } from "@/lib/validations";
+import { validateCaptcha, COOKIE_NAME } from "@/lib/captcha";
 
 // POST /api/contact - public contact form submission
 // Rate limiting via simple in-memory counter per IP
@@ -24,6 +25,27 @@ export async function POST(req: Request) {
 
   const body = await validateBody(req, contactSchema);
   if (!body.ok) return body.response;
+
+  // Honeypot check — if filled, silently accept but don't save (bot trap)
+  if (body.data.website && body.data.website.length > 0) {
+    return jsonResponse({ success: true, message: "پیام شما با موفقیت ارسال شد." }, 201);
+  }
+
+  // Captcha validation
+  const cookieHeader = req.headers.get("cookie") || "";
+  const cookies = Object.fromEntries(
+    cookieHeader.split(";").map((c) => {
+      const [k, ...v] = c.trim().split("=");
+      return [k, v.join("=")];
+    })
+  );
+  const captchaToken = cookies[COOKIE_NAME];
+  const captchaAnswer = (body.data as any).captchaAnswer as string | undefined;
+
+  const captchaResult = validateCaptcha(captchaToken, captchaAnswer);
+  if (!captchaResult.ok) {
+    return errorResponse(captchaResult.error!, 400);
+  }
 
   await db.contactMessage.create({
     data: {

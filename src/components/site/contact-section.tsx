@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/toast";
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle } from "lucide-react";
+import { MathCaptcha, HoneypotField } from "@/components/site/math-captcha";
 
 export function ContactSection() {
   const { data, isLoading } = useQuery({
@@ -25,6 +26,7 @@ export function ContactSection() {
     subject: "",
     message: "",
     website: "", // honeypot
+    captchaAnswer: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -32,7 +34,7 @@ export function ContactSection() {
     mutationFn: () => api.post("/api/contact", form),
     onSuccess: () => {
       toast.success("پیام شما با موفقیت ارسال شد. به زودی پاسخ خواهیم داد.");
-      setForm({ name: "", email: "", phone: "", subject: "", message: "", website: "" });
+      setForm({ name: "", email: "", phone: "", subject: "", message: "", website: "", captchaAnswer: "" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -43,6 +45,7 @@ export function ContactSection() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "ایمیل نامعتبر است";
     if (form.subject.trim().length < 2) errs.subject = "موضوع را وارد کنید";
     if (form.message.trim().length < 10) errs.message = "حداقل ۱۰ کاراکتر بنویسید";
+    if (!form.captchaAnswer.trim()) errs.captchaAnswer = "پاسخ کپچا الزامی است";
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     mutation.mutate();
@@ -78,14 +81,9 @@ export function ContactSection() {
             </h3>
             <div className="space-y-4">
               {/* Honeypot - hidden from users */}
-              <input
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
+              <HoneypotField
                 value={form.website}
-                onChange={(e) => setForm({ ...form, website: e.target.value })}
-                className="absolute opacity-0 pointer-events-none -z-10"
-                aria-hidden="true"
+                onChange={(v) => setForm({ ...form, website: v })}
               />
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -142,6 +140,11 @@ export function ContactSection() {
                 />
                 {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
               </div>
+              <MathCaptcha
+                value={form.captchaAnswer}
+                onChange={(v) => setForm({ ...form, captchaAnswer: v })}
+                error={errors.captchaAnswer}
+              />
               <Button
                 onClick={submit}
                 disabled={mutation.isPending}
