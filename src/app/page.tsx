@@ -45,9 +45,9 @@ export default function Home() {
           <>
             <HeroSlider />
             <FeaturedProducts />
+            <TestimonialPreview />
             <BlogSection />
             <AboutPreview />
-            <TestimonialPreview />
           </>
         )}
         {view === "products" && <ProductsSection />}

@@ -118,12 +118,6 @@ export function AdminLogin() {
               <Lock className="w-4 h-4" />
             </Button>
           </form>
-
-          <div className="mt-6 pt-6 border-t border-border text-center">
-            <p className="text-xs text-muted-foreground">
-              برای تست: admin@savers-chovil.ir / admin12345
-            </p>
-          </div>
         </div>
       </div>
     </div>

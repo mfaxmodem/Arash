@@ -25,6 +25,7 @@ interface NavState {
     | "blog"
     | "content"
     | "messages"
+    | "password"
     | null;
   // context for detail views
   selectedProductId: string | null;

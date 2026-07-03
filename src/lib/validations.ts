@@ -133,6 +133,18 @@ export const contactSchema = z.object({
   website: z.string().max(0, "bot detected").optional().or(z.literal("")),
 });
 
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "رمز عبور فعلی الزامی است"),
+  newPassword: z
+    .string()
+    .min(8, "رمز عبور جدید باید حداقل ۸ کاراکتر باشد")
+    .max(128, "رمز عبور بسیار طولانی است"),
+  confirmPassword: z.string().min(1, "تکرار رمز عبور الزامی است"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "رمز عبور جدید و تکرار آن مطابقت ندارند",
+  path: ["confirmPassword"],
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type ProductInput = z.infer<typeof productSchema>;
@@ -143,3 +155,4 @@ export type ProductCommentInput = z.infer<typeof productCommentSchema>;
 export type BlogPostInput = z.infer<typeof blogPostSchema>;
 export type PageContentInput = z.infer<typeof pageContentSchema>;
 export type ContactInput = z.infer<typeof contactSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
