@@ -175,3 +175,14 @@ Stage Summary:
 - Now using radix toast system with sonner-compatible API wrapper
 - All CRUD operations show proper success/error feedback
 curl https://router.bynara.id/v1/chat/completions -H "Authorization: Bearer $BYNARA_API_KEY" -H "Content-Type: application/json" -d '{"model":"glm-5.2-plan","messages":[{"role":"user","content":"Hello"}]}'
+
+
+curl https://router.bynara.id/v1/chat/completions \
+  -H "Authorization: Bearer sk-nry--VrEfk13hw1CXX53SZQvje0s_Tfl54CwHeuYykX1kH8" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4.5",
+    "messages": [
+      { "role": "user", "content": "Hello!" }
+    ]
+  }'

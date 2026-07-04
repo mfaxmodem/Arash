@@ -4,6 +4,10 @@ import { randomUUID } from "crypto";
 import { writeFile, mkdir, readdir, stat, unlink } from "fs/promises";
 import path from "path";
 
+// Configurable upload directory — set UPLOAD_DIR env var for standalone/production
+// Default: <cwd>/public/uploads (works for local dev with `next dev`)
+const UPLOAD_BASE = process.env.UPLOAD_DIR || path.join(process.cwd(), "public", "uploads");
+
 // ===== OWASP-aligned file upload hardening =====
 
 const ALLOWED_TYPES: Record<string, { ext: string; maxSize: number; category: "image" | "video" }> = {
@@ -85,7 +89,7 @@ export async function POST(req: Request) {
   // 6. Sanitize filename → UUID (no original name stored)
   const safeName = randomUUID() + allowed.ext;
   const subDir = allowed.category === "video" ? "videos" : "images";
-  const uploadDir = path.join(process.cwd(), "public", "uploads", subDir);
+  const uploadDir = path.join(UPLOAD_BASE, subDir);
   const filePath = path.join(uploadDir, safeName);
 
   // 7. Ensure directory exists & write file
@@ -110,7 +114,7 @@ export async function GET() {
   const auth = await requireAdmin();
   if (!auth.ok) return auth.response;
 
-  const baseDir = path.join(process.cwd(), "public", "uploads");
+  const baseDir = UPLOAD_BASE;
   const files: { name: string; url: string; size: number; category: string; uploaded: number }[] = [];
 
   for (const sub of ["images", "videos"] as const) {
@@ -162,7 +166,7 @@ export async function DELETE(req: Request) {
     return errorResponse("مسیر فایل نامعتبر است", 400);
   }
 
-  const filePath = path.join(process.cwd(), "public", normalized);
+  const filePath = path.join(UPLOAD_BASE, normalized.replace(/^\/uploads\/?/, ""));
   try {
     await unlink(filePath);
     return NextResponse.json({ success: true });
