@@ -1,0 +1,16 @@
+{
+  "name": "ساورز و چویل | خشکبار و ادویه‌جات",
+  "short_name": "SC",
+  "description": "فروش و بسته‌بندی خشکبار، ادویه‌جات، قند و شکر با کیفیت تضمینی",
+  "start_url": "/fa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5a6e28",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

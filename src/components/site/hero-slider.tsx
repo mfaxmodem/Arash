@@ -58,13 +58,14 @@ export function HeroSlider() {
           )}
           aria-hidden={idx !== current}
         >
-          {/* Background image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-[6000ms] ease-out"
-            style={{
-              backgroundImage: `url(${slide.image})`,
-              transform: idx === current ? "scale(1.08)" : "scale(1)",
-            }}
+          {/* Background image as <img> for SEO */}
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className={cn(
+              "absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-[6000ms] ease-out",
+              idx === current ? "scale-100" : "scale-105"
+            )}
           />
           {/* RTL-aware overlay: darker on right side where text sits */}
           <div className="absolute inset-0 bg-hero-overlay-rtl" />

@@ -35,6 +35,19 @@ export function SpaShell() {
 
   return (
     <>
+      {/* Fallback for crawlers and no-JS users */}
+      <noscript>
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h1 className="text-4xl font-black mb-4">ساورز و چویل | خشکبار و ادویه‌جات</h1>
+          <p className="text-lg text-muted-foreground mb-6">
+            فروش و بسته‌بندی خشکبار، ادویه‌جات، قند و شکر با کیفیت تضمینی و ارسال به سراسر کشور.
+          </p>
+          <p className="text-muted-foreground">
+            لطفاً جاوااسکریپت را فعال کنید تا از سایت استفاده کنید.
+          </p>
+        </div>
+      </noscript>
+
       {view === "home" && (
         <>
           <HeroSlider />

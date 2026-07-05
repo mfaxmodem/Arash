@@ -23,7 +23,6 @@ export function FeaturedProducts() {
   const { openProduct } = useNav();
   const { locale } = useTranslation();
 
-  // Fetch a larger pool and shuffle client-side for randomness on each load
   const { data, isLoading } = useQuery({
     queryKey: ["products-featured-pool", locale],
     queryFn: () => api.get<Paginated<Product>>(`/api/products?limit=100&lang=${locale}`),
@@ -140,9 +139,10 @@ function ProductMiniCard({
   onClick: () => void;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 text-right w-full"
+    <a
+      href={`/products/${product.slug}`}
+      onClick={(e) => { e.preventDefault(); onClick(); }}
+      className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 text-right w-full block"
     >
       <div className="relative aspect-square overflow-hidden bg-muted/30">
         {product.image ? (
@@ -187,7 +187,7 @@ function ProductMiniCard({
           مشاهده جزئیات
         </span>
       </div>
-    </button>
+    </a>
   );
 }
 

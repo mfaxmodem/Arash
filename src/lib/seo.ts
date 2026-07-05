@@ -8,18 +8,18 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savers-chovil.ir";
  * @returns Object suitable for metadata.alternates.languages
  *
  * Example output:
- * { "fa": "/fa/products/shoes", "en": "/en/products/shoes", "ar": "/ar/products/shoes", "x-default": "/fa/products/shoes" }
+ * { "fa": "https://example.com/fa/products/shoes", "en": "https://example.com/en/products/shoes", ... }
  */
 export function generateAlternates(path: string): Record<string, string> {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   const entries: Record<string, string> = {};
 
   for (const locale of LOCALES) {
-    entries[locale] = `/${locale}${cleanPath}`;
+    entries[locale] = `${BASE_URL}/${locale}${cleanPath}`;
   }
 
   // x-default points to the default language (Farsi)
-  entries["x-default"] = `/fa${cleanPath}`;
+  entries["x-default"] = `${BASE_URL}/fa${cleanPath}`;
 
   return entries;
 }

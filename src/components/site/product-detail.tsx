@@ -118,13 +118,16 @@ export function ProductDetail() {
     <div className="pt-24 pb-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 mb-6">
-        <button
-          onClick={() => setView("products")}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-        >
-          <ArrowRight className="w-4 h-4" />
-          بازگشت به محصولات
-        </button>
+        <nav aria-label="breadcrumb">
+          <a
+            href="#products"
+            onClick={(e) => { e.preventDefault(); setView("products"); }}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            <ArrowRight className="w-4 h-4" />
+            بازگشت به محصولات
+          </a>
+        </nav>
       </div>
 
       {/* Product detail */}

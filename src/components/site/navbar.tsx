@@ -11,21 +11,33 @@ import { useBrandIcons } from "@/hooks/use-brand-icons";
 import { useTranslation } from "@/contexts/language-context";
 import { useTheme } from "@/components/theme-provider";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
-import { LOCALES } from "@/i18n";
+import { LOCALES, type Locale } from "@/i18n";
+
+function getViewPath(view: View, locale: string): string {
+  const paths: Record<View, string> = {
+    home: `/${locale}`,
+    products: `/${locale}#products`,
+    agents: `/${locale}#agents`,
+    blog: `/${locale}#blog`,
+    testimonials: `/${locale}#testimonials`,
+    about: `/${locale}#about`,
+    contact: `/${locale}#contact`,
+    blogDetail: `/${locale}#blog`,
+    productDetail: `/${locale}#products`,
+  };
+  return paths[view];
+}
 
 export function Navbar() {
   const { view, setView } = useNav();
   const { saversIcon, chovilIcon } = useBrandIcons();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Detect home page: /fa, /en, /ar (exactly, no sub-path)
   const isHome = LOCALES.some((l) => pathname === `/${l}`) || pathname === "/";
-
-  // On inner pages, always use "scrolled" style regardless of scroll position
   const isDark = isHome && !scrolled;
 
   const NAV_ITEMS: { label: string; view: View }[] = [
@@ -45,7 +57,8 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleNav = (v: View) => {
+  const handleNav = (e: React.MouseEvent, v: View) => {
+    e.preventDefault();
     setView(v);
     setMobileOpen(false);
   };
@@ -62,8 +75,9 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <button
-            onClick={() => handleNav("home")}
+          <a
+            href={getViewPath("home", locale)}
+            onClick={(e) => handleNav(e, "home")}
             className="flex items-center gap-2 group"
             aria-label="صفحه اصلی"
           >
@@ -88,14 +102,15 @@ export function Navbar() {
                 خشکبار و ادویه‌جات
               </span>
             </div>
-          </button>
+          </a>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1" aria-label="منوی اصلی">
             {NAV_ITEMS.map((item) => (
-              <button
+              <a
                 key={item.view}
-                onClick={() => handleNav(item.view)}
+                href={getViewPath(item.view, locale)}
+                onClick={(e) => handleNav(e, item.view)}
                 className={cn(
                   "px-3.5 py-2 rounded-lg text-sm font-medium transition-colors relative",
                   view === item.view || (item.view === "blog" && view === "blogDetail")
@@ -108,7 +123,7 @@ export function Navbar() {
                 )}
               >
                 {item.label}
-              </button>
+              </a>
             ))}
           </nav>
 
@@ -145,11 +160,12 @@ export function Navbar() {
                     ساورز <span className="text-chovil">و</span> چویل
                   </div>
                 </div>
-                <nav className="flex flex-col p-4 gap-1">
+                <nav className="flex flex-col p-4 gap-1" aria-label="منوی موبایل">
                   {NAV_ITEMS.map((item) => (
                     <SheetClose asChild key={item.view}>
-                      <button
-                        onClick={() => handleNav(item.view)}
+                      <a
+                        href={getViewPath(item.view, locale)}
+                        onClick={(e) => handleNav(e, item.view)}
                         className={cn(
                           "px-4 py-3 rounded-lg text-right font-medium transition-colors",
                           view === item.view
@@ -158,7 +174,7 @@ export function Navbar() {
                         )}
                       >
                         {item.label}
-                      </button>
+                      </a>
                     </SheetClose>
                   ))}
                 </nav>

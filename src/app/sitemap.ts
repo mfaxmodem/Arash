@@ -1,47 +1,71 @@
 import type { MetadataRoute } from "next";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savers-chovil.ir";
+const LOCALES = ["fa", "en", "ar"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
-    { url: `${BASE_URL}/products`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: `${BASE_URL}/agents`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/testimonials`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-  ];
+  const staticPages = ["/", "/products", "/agents", "/blog", "/testimonials", "/about", "/contact"];
+  const staticPagesConfig: Record<string, { changeFrequency: MetadataRoute.Sitemap[0]["changeFrequency"]; priority: number }> = {
+    "/": { changeFrequency: "daily", priority: 1 },
+    "/products": { changeFrequency: "daily", priority: 0.9 },
+    "/agents": { changeFrequency: "monthly", priority: 0.6 },
+    "/blog": { changeFrequency: "weekly", priority: 0.8 },
+    "/testimonials": { changeFrequency: "weekly", priority: 0.5 },
+    "/about": { changeFrequency: "monthly", priority: 0.5 },
+    "/contact": { changeFrequency: "monthly", priority: 0.5 },
+  };
 
-  // Dynamic product pages
-  let productPages: MetadataRoute.Sitemap = [];
+  const allPages: MetadataRoute.Sitemap = [];
+
+  // Generate all static pages for all locales
+  for (const page of staticPages) {
+    const config = staticPagesConfig[page];
+    for (const locale of LOCALES) {
+      const url = page === "/" ? `${BASE_URL}/${locale}` : `${BASE_URL}/${locale}${page}`;
+      allPages.push({
+        url,
+        lastModified: new Date(),
+        changeFrequency: config.changeFrequency,
+        priority: config.priority,
+      });
+    }
+  }
+
+  // Dynamic product pages for all locales
   try {
-    const res = await fetch(`${BASE_URL}/api/products?limit=100`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${BASE_URL}/api/products?limit=200&admin=true`, { next: { revalidate: 3600 } });
     if (res.ok) {
       const data = await res.json();
-      productPages = (data.items ?? []).map((p: any) => ({
-        url: `${BASE_URL}/products/${p.slug}`,
-        lastModified: new Date(p.updatedAt),
-        changeFrequency: "weekly" as const,
-        priority: 0.8,
-      }));
+      for (const p of data.items ?? []) {
+        for (const locale of LOCALES) {
+          allPages.push({
+            url: `${BASE_URL}/${locale}/products/${p.slug}`,
+            lastModified: new Date(p.updatedAt),
+            changeFrequency: "weekly",
+            priority: 0.8,
+          });
+        }
+      }
     }
   } catch { /* skip */ }
 
-  // Dynamic blog pages
-  let blogPages: MetadataRoute.Sitemap = [];
+  // Dynamic blog pages for all locales
   try {
     const res = await fetch(`${BASE_URL}/api/blog`, { next: { revalidate: 3600 } });
     if (res.ok) {
       const data = await res.json();
-      blogPages = (data.items ?? []).map((b: any) => ({
-        url: `${BASE_URL}/blog/${b.slug}`,
-        lastModified: new Date(b.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-      }));
+      for (const b of data.items ?? []) {
+        for (const locale of LOCALES) {
+          allPages.push({
+            url: `${BASE_URL}/${locale}/blog/${b.slug}`,
+            lastModified: new Date(b.updatedAt),
+            changeFrequency: "monthly",
+            priority: 0.7,
+          });
+        }
+      }
     }
   } catch { /* skip */ }
 
-  return [...staticPages, ...productPages, ...blogPages];
+  return allPages;
 }

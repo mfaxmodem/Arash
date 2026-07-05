@@ -6,6 +6,8 @@ import { localizeItem, LOCALIZABLE } from "@/lib/localize";
 import { notFound } from "next/navigation";
 import { ProductPageClient } from "./product-page-client";
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savers-chovil.ir";
+
 export async function generateStaticParams() {
   const products = await db.product.findMany({
     where: { active: true },
@@ -31,6 +33,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const t = await getDictionary(locale);
   const brand = t.meta.title.split("|")[1]?.trim() || "ساورز و چویل";
   const path = `/products/${slug}`;
+  const absoluteUrl = `${BASE_URL}/${locale}${path}`;
 
   return {
     title: `${localized.name} | ${brand}`,
@@ -38,11 +41,18 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     openGraph: {
       title: localized.name,
       description: localized.description?.slice(0, 160),
-      images: product.image ? [product.image] : undefined,
+      images: product.image ? [{ url: product.image, width: 800, height: 800, alt: product.name }] : undefined,
       type: "website",
+      url: absoluteUrl,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: localized.name,
+      description: localized.description?.slice(0, 160),
+      images: product.image ? [product.image] : undefined,
     },
     alternates: {
-      canonical: `/${locale}${path}`,
+      canonical: absoluteUrl,
       languages: generateAlternates(path),
     },
   };
@@ -61,5 +71,35 @@ export default async function ProductPage({ params }: any) {
 
   const localized = localizeItem(product, LOCALIZABLE.product, locale);
 
-  return <ProductPageClient product={localized} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: localized.name,
+    description: localized.description || undefined,
+    image: product.image || undefined,
+    brand: {
+      "@type": "Brand",
+      name: product.brand === "SAVERS" ? "ساورز" : "چویل",
+    },
+    category: product.category?.name || undefined,
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "IRR",
+      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: `${BASE_URL}/${locale}/products/${slug}`,
+    },
+    sku: product.slug,
+    url: `${BASE_URL}/${locale}/products/${slug}`,
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductPageClient product={localized} />
+    </>
+  );
 }
