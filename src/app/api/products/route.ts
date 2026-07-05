@@ -8,14 +8,15 @@ import type { Locale } from "@/i18n";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const limit = Math.min(48, Math.max(1, parseInt(searchParams.get("limit") || "12")));
+  const limit = Math.min(200, Math.max(1, parseInt(searchParams.get("limit") || "12")));
   const categoryId = searchParams.get("categoryId") || undefined;
   const brand = searchParams.get("brand") || undefined;
   const search = searchParams.get("search") || undefined;
   const featured = searchParams.get("featured");
   const lang = (searchParams.get("lang") || "fa") as Locale;
+  const admin = searchParams.get("admin") === "true";
 
-  const where: any = { active: true };
+  const where: any = admin ? {} : { active: true };
   if (categoryId) where.categoryId = categoryId;
   if (brand && ["SAVERS", "CHOVIL"].includes(brand)) where.brand = brand;
   if (search) where.name = { contains: search };

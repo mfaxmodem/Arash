@@ -12,7 +12,7 @@ module.exports = {
       cwd: PROJECT_ROOT,
       env: {
         NODE_ENV: "production",
-        PORT: 3001,
+        PORT: 3000,
         UPLOAD_DIR: path.join(PROJECT_ROOT, "public", "uploads"),
       },
       // Restart policy

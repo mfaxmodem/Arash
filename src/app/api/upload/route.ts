@@ -11,10 +11,10 @@ const UPLOAD_BASE = process.env.UPLOAD_DIR || path.join(process.cwd(), "public",
 // ===== OWASP-aligned file upload hardening =====
 
 const ALLOWED_TYPES: Record<string, { ext: string; maxSize: number; category: "image" | "video" }> = {
-  "image/jpeg":  { ext: ".jpg",  maxSize: 5 * 1024 * 1024,  category: "image" },
-  "image/png":   { ext: ".png",  maxSize: 5 * 1024 * 1024,  category: "image" },
-  "image/webp":  { ext: ".webp", maxSize: 5 * 1024 * 1024,  category: "image" },
-  "image/svg+xml": { ext: ".svg", maxSize: 5 * 1024 * 1024, category: "image" },
+  "image/jpeg":  { ext: ".jpg",  maxSize: 10 * 1024 * 1024,  category: "image" },
+  "image/png":   { ext: ".png",  maxSize: 10 * 1024 * 1024,  category: "image" },
+  "image/webp":  { ext: ".webp", maxSize: 10 * 1024 * 1024,  category: "image" },
+  "image/svg+xml": { ext: ".svg", maxSize: 10 * 1024 * 1024, category: "image" },
   "video/mp4":   { ext: ".mp4",  maxSize: 50 * 1024 * 1024, category: "video" },
   "video/webm":  { ext: ".webm", maxSize: 50 * 1024 * 1024, category: "video" },
 };

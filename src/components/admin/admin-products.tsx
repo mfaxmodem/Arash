@@ -58,8 +58,8 @@ export function AdminProducts() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-products", page, search],
     queryFn: () => {
-      const params = new URLSearchParams({ page: String(page), limit: "10" });
-      return api.get<Paginated<Product>>(`/api/products?${params}&limit=20`);
+      const params = new URLSearchParams({ page: String(page), limit: "100", admin: "true" });
+      return api.get<Paginated<Product>>(`/api/products?${params}`);
     },
   });
 
@@ -142,8 +142,8 @@ export function AdminProducts() {
   const set = (key: keyof FormState, val: any) => setForm((f) => ({ ...f, [key]: val }));
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-3 shrink-0">
         <div>
           <h1 className="text-2xl font-black text-foreground flex items-center gap-2">
             <Package className="w-6 h-6" />
@@ -158,7 +158,7 @@ export function AdminProducts() {
       </div>
 
       {/* Search */}
-      <div className="relative max-w-sm">
+      <div className="relative max-w-sm shrink-0">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="جستجوی محصول..." className="pr-10" />
       </div>
@@ -167,7 +167,7 @@ export function AdminProducts() {
       {isLoading ? (
         <div className="space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-lg" />)}</div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden">
+        <div className="rounded-xl border border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-muted/50">

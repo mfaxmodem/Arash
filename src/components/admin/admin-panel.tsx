@@ -54,7 +54,7 @@ export function AdminPanel() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background flex flex-col">
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden">
       {/* Top close bar */}
       <div className="flex items-center justify-between px-4 py-2 bg-foreground text-background text-sm">
         <span className="font-medium">پنل مدیریت ساورز و چویل</span>
